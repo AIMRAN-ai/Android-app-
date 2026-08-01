@@ -15,6 +15,17 @@ import com.aimr.aimrpos.presentation.invoice.InvoicePreviewScreen
 import com.aimr.aimrpos.presentation.customer.CustomerLedgerScreen
 import com.aimr.aimrpos.presentation.reports.ReportsScreen
 import com.aimr.aimrpos.presentation.settings.SettingsScreen
+import com.aimr.aimrpos.presentation.scan.DocumentScannerScreen
+import com.aimr.aimrpos.presentation.scan.DocumentReviewScreen
+import com.aimr.aimrpos.presentation.purchase.PurchaseOrderScreen
+import com.aimr.aimrpos.presentation.grn.GRNScreen
+import com.aimr.aimrpos.presentation.returninvoice.ReturnInvoiceScreen
+import com.aimr.aimrpos.presentation.approval.ApprovalQueueScreen
+import com.aimr.aimrpos.presentation.audit.AuditLogScreen
+import com.aimr.aimrpos.presentation.vault.DocumentVaultScreen
+import com.aimr.aimrpos.presentation.warehouse.WarehouseScreen
+import com.aimr.aimrpos.presentation.transfer.StockTransferScreen
+import com.aimr.aimrpos.presentation.aging.AgingReportScreen
 
 @Composable
 fun NavGraph() {
@@ -36,5 +47,22 @@ fun NavGraph() {
         composable(Screen.CustomerLedger.route) { CustomerLedgerScreen(navController) }
         composable(Screen.Reports.route) { ReportsScreen(navController) }
         composable(Screen.Settings.route) { SettingsScreen(navController) }
+        composable(Screen.DocumentScanner.route) { DocumentScannerScreen(navController) }
+        composable(
+            route = Screen.DocumentReview.route,
+            arguments = listOf(navArgument("docId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val docId = backStackEntry.arguments?.getString("docId") ?: ""
+            DocumentReviewScreen(navController, docId = docId)
+        }
+        composable(Screen.PurchaseOrder.route) { PurchaseOrderScreen(navController) }
+        composable(Screen.GRN.route) { GRNScreen(navController) }
+        composable(Screen.ReturnInvoice.route) { ReturnInvoiceScreen(navController) }
+        composable(Screen.ApprovalQueue.route) { ApprovalQueueScreen(navController) }
+        composable(Screen.AuditLog.route) { AuditLogScreen(navController) }
+        composable(Screen.DocumentVault.route) { DocumentVaultScreen(navController) }
+        composable(Screen.Warehouse.route) { WarehouseScreen(navController) }
+        composable(Screen.StockTransfer.route) { StockTransferScreen(navController) }
+        composable(Screen.AgingReport.route) { AgingReportScreen(navController) }
     }
 }
