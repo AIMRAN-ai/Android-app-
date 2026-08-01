@@ -27,4 +27,10 @@ interface CustomerDao {
 
     @Query("UPDATE customers SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_customers_sync_status ON customers(syncStatus)")
+    suspend fun indexSyncStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_customers_credit ON customers(creditBalance)")
+    suspend fun indexCredit()
 }

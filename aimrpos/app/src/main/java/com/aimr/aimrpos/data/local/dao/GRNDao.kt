@@ -29,4 +29,10 @@ interface GRNDao {
 
     @Query("UPDATE grns SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_grn_sync_status ON grns(syncStatus)")
+    suspend fun indexSyncStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_grn_po ON grns(purchaseOrderId)")
+    suspend fun indexPO()
 }

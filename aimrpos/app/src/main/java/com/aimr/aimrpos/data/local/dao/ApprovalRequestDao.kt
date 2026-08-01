@@ -26,4 +26,10 @@ interface ApprovalRequestDao {
 
     @Query("UPDATE approval_requests SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_approval_status ON approval_requests(status)")
+    suspend fun indexStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_approval_requester ON approval_requests(requestedByUserId)")
+    suspend fun indexRequester()
 }

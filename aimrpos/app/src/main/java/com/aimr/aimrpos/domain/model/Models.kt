@@ -1,5 +1,8 @@
 package com.aimr.aimrpos.domain.model
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class Product(
     val id: String = "",
     val name: String = "",
@@ -17,6 +20,7 @@ data class Product(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class Invoice(
     val id: String = "",
     val invoiceNumber: String = "",
@@ -33,6 +37,7 @@ data class Invoice(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class InvoiceItem(
     val id: String = "",
     val invoiceId: String = "",
@@ -43,6 +48,7 @@ data class InvoiceItem(
     val lineTotal: Double = 0.0
 )
 
+@Stable
 data class Customer(
     val id: String = "",
     val name: String = "",
@@ -54,6 +60,7 @@ data class Customer(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class User(
     val id: String = "",
     val businessId: String = "",
@@ -66,6 +73,7 @@ data class User(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class Business(
     val id: String = "",
     val name: String = "",
@@ -79,6 +87,7 @@ data class Business(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class Category(
     val id: String = "",
     val name: String = "",

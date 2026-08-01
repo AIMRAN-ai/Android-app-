@@ -1,5 +1,8 @@
 package com.aimr.aimrpos.domain.model
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class PurchaseOrder(
     val id: String = "",
     val poNumber: String = "",
@@ -19,6 +22,7 @@ data class PurchaseOrder(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class POLineItem(
     val productId: String = "",
     val productName: String = "",
@@ -28,6 +32,7 @@ data class POLineItem(
     val lineTotal: Double = 0.0
 )
 
+@Stable
 data class GRN(
     val id: String = "",
     val grnNumber: String = "",
@@ -45,6 +50,7 @@ data class GRN(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class GRNLineItem(
     val productId: String = "",
     val productName: String = "",
@@ -53,6 +59,7 @@ data class GRNLineItem(
     val lineTotal: Double = 0.0
 )
 
+@Stable
 data class ReturnInvoice(
     val id: String = "",
     val returnNumber: String = "",
@@ -72,6 +79,7 @@ data class ReturnInvoice(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class ReturnLineItem(
     val invoiceItemId: String = "",
     val productId: String = "",
@@ -81,6 +89,7 @@ data class ReturnLineItem(
     val lineTotal: Double = 0.0
 )
 
+@Stable
 data class AuditLog(
     val id: String = "",
     val userId: String = "",
@@ -95,6 +104,7 @@ data class AuditLog(
     val ipAddress: String? = null
 )
 
+@Stable
 data class DocumentVault(
     val id: String = "",
     val documentType: String = "",
@@ -112,6 +122,7 @@ data class DocumentVault(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class Warehouse(
     val id: String = "",
     val name: String = "",
@@ -125,6 +136,7 @@ data class Warehouse(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class ApprovalRequest(
     val id: String = "",
     val requestType: String = "",
@@ -139,6 +151,7 @@ data class ApprovalRequest(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class Supplier(
     val id: String = "",
     val name: String = "",
@@ -158,6 +171,7 @@ data class Supplier(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class StockTransfer(
     val id: String = "",
     val transferNumber: String = "",
@@ -174,6 +188,7 @@ data class StockTransfer(
     val syncStatus: String = "PENDING"
 )
 
+@Stable
 data class Payment(
     val id: String = "",
     val invoiceId: String? = null,

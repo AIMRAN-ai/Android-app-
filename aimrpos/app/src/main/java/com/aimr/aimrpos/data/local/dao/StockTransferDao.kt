@@ -26,4 +26,10 @@ interface StockTransferDao {
 
     @Query("UPDATE stock_transfers SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_stock_sync_status ON stock_transfers(syncStatus)")
+    suspend fun indexSyncStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_stock_status ON stock_transfers(status)")
+    suspend fun indexStatus()
 }

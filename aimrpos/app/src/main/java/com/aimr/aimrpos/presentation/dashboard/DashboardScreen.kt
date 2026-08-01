@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,44 +37,102 @@ data class DashboardData(
 fun DashboardScreen(navController: androidx.navigation.NavHostController) {
     val data = DashboardData()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = "AIMRAN POS",
-            style = MaterialTheme.typography.displayLarge,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Today's Dashboard",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            DashboardCard(
-                title = "Today's Sales",
-                value = "Rs ${"%.2f".format(data.todaySales)}",
-                modifier = Modifier.weight(1f)
+        item {
+            Text(
+                text = "AIMRAN POS",
+                style = MaterialTheme.typography.displayLarge,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
             )
-            DashboardCard(
-                title = "Invoices",
-                value = data.totalInvoices.toString(),
-                modifier = Modifier.weight(1f)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Today's Dashboard",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
             )
         }
+
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                DashboardCard(
+                    title = "Today's Sales",
+                    value = "Rs ${"%.2f".format(data.todaySales)}",
+                    modifier = Modifier.weight(1f)
+                )
+                DashboardCard(
+                    title = "Invoices",
+                    value = data.totalInvoices.toString(),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                DashboardCard(
+                    title = "Low Stock",
+                    value = data.lowStockItems.toString(),
+                    modifier = Modifier.weight(1f),
+                    cardColor = if (data.lowStockItems > 0) Color(0xFFFFC107) else Color(0xFF388E3C)
+                )
+                DashboardCard(
+                    title = "Outstanding Credit",
+                    value = "Rs ${"%.2f".format(data.outstandingCredit)}",
+                    modifier = Modifier.weight(1f),
+                    cardColor = Color(0xFFD32F2F)
+                )
+            }
+        }
+
+        item {
+            Text(
+                text = "Quick Actions",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    onClick = { navController.navigate("invoice_new") },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("New Invoice", fontSize = 16.sp)
+                }
+
+                Button(
+                    onClick = { navController.navigate("inventory") },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("Add Product", fontSize = 16.sp)
+                }
+
+                Button(
+                    onClick = { navController.navigate("customers") },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("View Customers", fontSize = 16.sp)
+                }
+            }
+        }
+    }
+}
 
         Spacer(modifier = Modifier.height(12.dp))
 

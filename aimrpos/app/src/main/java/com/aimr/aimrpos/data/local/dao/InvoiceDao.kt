@@ -30,4 +30,13 @@ interface InvoiceDao {
 
     @Query("UPDATE invoices SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_invoices_sync_status ON invoices(syncStatus)")
+    suspend fun indexSyncStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_invoices_customer ON invoices(customerId)")
+    suspend fun indexCustomer()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_invoices_date ON invoices(updatedAt)")
+    suspend fun indexDate()
 }

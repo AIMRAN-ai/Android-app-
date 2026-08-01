@@ -29,4 +29,13 @@ interface PurchaseOrderDao {
 
     @Query("UPDATE purchase_orders SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_po_sync_status ON purchase_orders(syncStatus)")
+    suspend fun indexSyncStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_po_supplier ON purchase_orders(supplierId)")
+    suspend fun indexSupplier()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_po_status ON purchase_orders(status)")
+    suspend fun indexStatus()
 }

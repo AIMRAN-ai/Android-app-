@@ -26,4 +26,10 @@ interface SupplierDao {
 
     @Query("UPDATE suppliers SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_suppliers_sync_status ON suppliers(syncStatus)")
+    suspend fun indexSyncStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_suppliers_credit ON suppliers(creditBalance)")
+    suspend fun indexCredit()
 }

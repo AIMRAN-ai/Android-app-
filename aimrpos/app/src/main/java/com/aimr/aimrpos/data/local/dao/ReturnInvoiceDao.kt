@@ -26,4 +26,10 @@ interface ReturnInvoiceDao {
 
     @Query("UPDATE return_invoices SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_return_sync_status ON return_invoices(syncStatus)")
+    suspend fun indexSyncStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_return_original ON return_invoices(originalInvoiceId)")
+    suspend fun indexOriginalInvoice()
 }

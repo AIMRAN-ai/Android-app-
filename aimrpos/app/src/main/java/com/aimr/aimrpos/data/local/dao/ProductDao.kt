@@ -34,4 +34,16 @@ interface ProductDao {
 
     @Query("UPDATE products SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_products_sync_status ON products(syncStatus)")
+    suspend fun indexSyncStatus()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_products_category ON products(categoryId)")
+    suspend fun indexCategory()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_products_barcode ON products(barcode)")
+    suspend fun indexBarcode()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_products_sku ON products(sku)")
+    suspend fun indexSku()
 }

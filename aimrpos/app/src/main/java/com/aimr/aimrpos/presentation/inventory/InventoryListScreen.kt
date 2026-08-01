@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -101,8 +101,10 @@ fun InventoryListScreen(navController: androidx.navigation.NavHostController) {
             (searchQuery.isEmpty() || product.name.contains(searchQuery, ignoreCase = true) || product.sku.contains(searchQuery, ignoreCase = true))
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            filteredProducts.forEach { product ->
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(filteredProducts, key = { it.id }) { product ->
                 ProductListItem(
                     product = product,
                     onClick = { /* navigate to edit */ }
