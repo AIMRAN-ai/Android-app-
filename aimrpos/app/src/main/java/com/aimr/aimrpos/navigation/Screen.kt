@@ -1,0 +1,27 @@
+package com.aimr.aimrpos.navigation
+
+sealed class Screen(val route: String) {
+    object Login : Screen("login")
+    object Dashboard : Screen("dashboard")
+    object InventoryList : Screen("inventory")
+    object ProductForm : Screen("inventory_add_edit")
+    object NewInvoice : Screen("invoice_new")
+    object InvoicePreview : Screen("invoice_preview/{invoiceId}")
+    object CustomerLedger : Screen("customers")
+    object Reports : Screen("reports")
+    object Settings : Screen("settings")
+    object DocumentScanner : Screen("document_scanner")
+    object DocumentReview : Screen("document_review/{docId}")
+    object PurchaseOrder : Screen("purchase_order")
+    object GRN : Screen("grn")
+    object ReturnInvoice : Screen("return_invoice")
+    object ApprovalQueue : Screen("approval_queue")
+    object AuditLog : Screen("audit_log")
+    object DocumentVault : Screen("document_vault")
+    object Warehouse : Screen("warehouse")
+    object StockTransfer : Screen("stock_transfer")
+    object AgingReport : Screen("aging_report")
+    object QrScanner : Screen("qr_scanner")
+    object ScanHub : Screen("scan_hub")
+    object SupplierLedger : Screen("supplier_ledger")
+}

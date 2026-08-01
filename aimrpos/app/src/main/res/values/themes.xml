@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AimrPos" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">#1565C0</item>
+        <item name="android:colorPrimaryVariant">#0D47A1</item>
+        <item name="android:colorOnPrimary">#FFFFFF</item>
+        <item name="android:colorSecondary">#FF8F00</item>
+        <item name="android:colorSecondaryVariant">#E65100</item>
+        <item name="android:colorOnSecondary">#FFFFFF</item>
+        <item name="android:colorBackground">#FFFFFF</item>
+        <item name="android:colorSurface">#FFFFFF</item>
+        <item name="android:colorOnBackground">#1C1B1F</item>
+        <item name="android:colorOnSurface">#1C1B1F</item>
+        <item name="android:colorError">#D32F2F</item>
+        <item name="android:colorOnError">#FFFFFF</item>
+    </style>
+</resources>
