@@ -21,4 +21,5 @@ sealed class Screen(val route: String) {
     object Warehouse : Screen("warehouse")
     object StockTransfer : Screen("stock_transfer")
     object AgingReport : Screen("aging_report")
+    object QrScanner : Screen("qr_scanner")
 }

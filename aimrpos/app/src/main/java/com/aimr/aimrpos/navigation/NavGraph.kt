@@ -26,6 +26,43 @@ import com.aimr.aimrpos.presentation.vault.DocumentVaultScreen
 import com.aimr.aimrpos.presentation.warehouse.WarehouseScreen
 import com.aimr.aimrpos.presentation.transfer.StockTransferScreen
 import com.aimr.aimrpos.presentation.aging.AgingReportScreen
+import com.aimr.aimrpos.presentation.qr.QrScannerScreen
+import com.aimr.aimrpos.ui.bottombar.CinematicBottomBar
+import com.aimr.aimrpos.ui.bottombar.BottomNavItem
+import androidx.compose.ui.graphics.vector.ImageVector
+
+val BottomNavItems = listOf(
+    BottomNavItem(
+        route = Screen.Dashboard.route,
+        label = "Home",
+        icon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_compass),
+        activeIcon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_compass)
+    ),
+    BottomNavItem(
+        route = Screen.InventoryList.route,
+        label = "Stock",
+        icon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_agenda),
+        activeIcon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_agenda)
+    ),
+    BottomNavItem(
+        route = Screen.NewInvoice.route,
+        label = "Invoice",
+        icon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_send),
+        activeIcon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_send)
+    ),
+    BottomNavItem(
+        route = Screen.CustomerLedger.route,
+        label = "Customers",
+        icon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_manage),
+        activeIcon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_manage)
+    ),
+    BottomNavItem(
+        route = Screen.Settings.route,
+        label = "Settings",
+        icon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_preferences),
+        activeIcon = ImageVector.vectorResource(id = android.R.drawable.ic_menu_preferences)
+    )
+)
 
 @Composable
 fun NavGraph() {
@@ -33,6 +70,8 @@ fun NavGraph() {
 
     NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(Screen.Login.route) { LoginScreen(navController) }
+
+        // Main screens with bottom bar
         composable(Screen.Dashboard.route) { DashboardScreen(navController) }
         composable(Screen.InventoryList.route) { InventoryListScreen(navController) }
         composable(Screen.ProductForm.route) { ProductFormScreen(navController) }
@@ -47,6 +86,8 @@ fun NavGraph() {
         composable(Screen.CustomerLedger.route) { CustomerLedgerScreen(navController) }
         composable(Screen.Reports.route) { ReportsScreen(navController) }
         composable(Screen.Settings.route) { SettingsScreen(navController) }
+
+        // Enterprise screens
         composable(Screen.DocumentScanner.route) { DocumentScannerScreen(navController) }
         composable(
             route = Screen.DocumentReview.route,
@@ -64,5 +105,51 @@ fun NavGraph() {
         composable(Screen.Warehouse.route) { WarehouseScreen(navController) }
         composable(Screen.StockTransfer.route) { StockTransferScreen(navController) }
         composable(Screen.AgingReport.route) { AgingReportScreen(navController) }
+        composable(Screen.QrScanner.route) { QrScannerScreen(navController) }
+    }
+}
+
+@Composable
+fun MainNavGraphWithBottomBar() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = Screen.Dashboard.route) {
+        composable(Screen.Dashboard.route) { DashboardScreen(navController) }
+        composable(Screen.InventoryList.route) { InventoryListScreen(navController) }
+        composable(Screen.NewInvoice.route) { NewInvoiceScreen(navController) }
+        composable(Screen.CustomerLedger.route) { CustomerLedgerScreen(navController) }
+        composable(Screen.Settings.route) { SettingsScreen(navController) }
+
+        // Bottom bar on all main screens
+        composable(Screen.Dashboard.route) {
+            Column {
+                DashboardScreen(navController)
+                CinematicBottomBar(navController, BottomNavItems)
+            }
+        }
+        composable(Screen.InventoryList.route) {
+            Column {
+                InventoryListScreen(navController)
+                CinematicBottomBar(navController, BottomNavItems)
+            }
+        }
+        composable(Screen.NewInvoice.route) {
+            Column {
+                NewInvoiceScreen(navController)
+                CinematicBottomBar(navController, BottomNavItems)
+            }
+        }
+        composable(Screen.CustomerLedger.route) {
+            Column {
+                CustomerLedgerScreen(navController)
+                CinematicBottomBar(navController, BottomNavItems)
+            }
+        }
+        composable(Screen.Settings.route) {
+            Column {
+                SettingsScreen(navController)
+                CinematicBottomBar(navController, BottomNavItems)
+            }
+        }
     }
 }
