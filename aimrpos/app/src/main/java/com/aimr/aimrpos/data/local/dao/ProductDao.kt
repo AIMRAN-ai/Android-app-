@@ -29,8 +29,23 @@ interface ProductDao {
     @Query("SELECT * FROM products WHERE isDeleted = 0 AND stockQty <= lowStockThreshold")
     fun getLowStock(): Flow<List<ProductEntity>>
 
+    @Query("SELECT * FROM products WHERE barcode = :barcode AND isDeleted = 0 LIMIT 1")
+    suspend fun getByBarcode(barcode: String): ProductEntity?
+
+    @Query("SELECT * FROM products WHERE qrCode = :qrCode AND isDeleted = 0 LIMIT 1")
+    suspend fun getByQrCode(qrCode: String): ProductEntity?
+
+    @Query("SELECT * FROM products WHERE productType = :type AND isDeleted = 0 ORDER BY name ASC")
+    fun getByProductType(type: String): Flow<List<ProductEntity>>
+
     @Query("SELECT * FROM products WHERE syncStatus = 'PENDING'")
     fun getUnsynced(): Flow<List<ProductEntity>>
+
+    @Query("UPDATE products SET stockQty = stockQty - :quantity WHERE id = :productId AND stockQty >= :quantity")
+    suspend fun deductStock(productId: String, quantity: Double): Int
+
+    @Query("UPDATE products SET stockQty = stockQty + :quantity WHERE id = :productId")
+    suspend fun addStock(productId: String, quantity: Double)
 
     @Query("UPDATE products SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)

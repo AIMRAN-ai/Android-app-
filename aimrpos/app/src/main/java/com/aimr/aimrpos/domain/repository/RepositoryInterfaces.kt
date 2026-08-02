@@ -24,6 +24,11 @@ interface ProductRepository {
     fun search(query: String): Flow<List<Product>>
     fun getByCategory(categoryId: String): Flow<List<Product>>
     fun getLowStock(): Flow<List<Product>>
+    suspend fun getByBarcode(barcode: String): Product?
+    suspend fun getByQrCode(qrCode: String): Product?
+    fun getByProductType(type: String): Flow<List<Product>>
+    suspend fun deductStock(productId: String, quantity: Double): Boolean
+    suspend fun addStock(productId: String, quantity: Double)
     suspend fun updateSyncStatus(id: String, status: String)
 }
 

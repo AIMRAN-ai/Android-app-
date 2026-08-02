@@ -1,5 +1,10 @@
 package com.aimr.aimrpos.presentation.invoice
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.pdf.PdfDocument
+import android.os.Environment
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,141 +13,157 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.aimr.aimrpos.utils.ReceiptGenerator
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun InvoicePreviewScreen(
-    navController: androidx.navigation.NavHostController,
-    invoiceId: String = ""
+    navController: NavHostController,
+    invoiceId: String = "",
+    viewModel: InvoicePreviewViewModel = viewModel()
 ) {
+    val invoice by viewModel.invoice.collectAsState()
+    val items by viewModel.items.collectAsState()
+
+    LaunchedEffect(invoiceId) {
+        viewModel.loadInvoice(invoiceId)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFF0F172A), Color(0xFF1E293B))
+                )
+            )
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
         Text(
-            text = "AIMRAN POS",
-            style = MaterialTheme.typography.displayLarge,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
-        Text(
-            text = "INVOICE",
+            text = "Invoice Preview",
             style = MaterialTheme.typography.headlineMedium,
+            color = Color.White,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Invoice #: INV-20260801-001",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Text(
-            text = "Date: 2026-08-01",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Text(
-            text = "Customer: Fatima Khan",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Text(
-            text = "Phone: 0321-9876543",
-            style = MaterialTheme.typography.bodyMedium
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("Item", fontWeight = FontWeight.Bold)
-            Text("Qty", fontWeight = FontWeight.Bold)
-            Text("Price", fontWeight = FontWeight.Bold)
-            Text("Total", fontWeight = FontWeight.Bold)
+        Text(
+            text = "Invoice #: ${invoice.invoiceNumber}",
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.White
+        )
+        Text(
+            text = "Date: ${SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).format(Date(invoice.updatedAt))}",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color(0xFF94A3B8)
+        )
+        Text(
+            text = "Customer: ${invoice.customerName}",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White
+        )
+        if (!invoice.customerPhone.isNullOrEmpty()) {
+            Text(
+                text = "Phone: ${invoice.customerPhone}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF94A3B8)
+            )
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Atta 5kg x 2", modifier = Modifier.weight(1f))
-        Text("2", modifier = Modifier.weight(1f))
-        Text("Rs 420.00", modifier = Modifier.weight(1f))
-        Text("Rs 840.00", modifier = Modifier.weight(1f))
-
-        Text("Cooking Oil 1L x 1", modifier = Modifier.weight(1f))
-        Text("1", modifier = Modifier.weight(1f))
-        Text("Rs 210.00", modifier = Modifier.weight(1f))
-        Text("Rs 210.00", modifier = Modifier.weight(1f))
+        items.forEach { item ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = item.productName, modifier = Modifier.weight(1f), color = Color.White)
+                Text(text = "${item.quantity} x Rs ${"%.2f".format(item.unitPrice)}", color = Color(0xFF94A3B8))
+                Text(text = "Rs ${"%.2f".format(item.lineTotal)}", color = Color.White)
+            }
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("Subtotal", fontWeight = FontWeight.Medium)
-            Text("Rs 1050.00")
+        Text("Subtotal: Rs ${"%.2f".format(invoice.subtotal)}", color = Color.White)
+        Text("Tax (17%): Rs ${"%.2f".format(invoice.taxAmount)}", color = Color.White)
+        if (invoice.discount > 0) {
+            Text("Discount: Rs ${"%.2f".format(invoice.discount)}", color = Color(0xFFEF4444))
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("Tax (17%)", fontWeight = FontWeight.Medium)
-            Text("Rs 178.50")
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("Discount", fontWeight = FontWeight.Medium)
-            Text("Rs 0.00")
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("TOTAL", fontWeight = FontWeight.Bold)
-            Text("Rs 1228.50", fontWeight = FontWeight.Bold)
-        }
+        Text(
+            text = "TOTAL: Rs ${"%.2f".format(invoice.total)}",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color(0xFF10B981),
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text("Payment: ${invoice.paymentMethod}", color = Color.White)
+        Text("Status: ${invoice.paymentStatus}", color = Color.White)
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
-                onClick = { /* print */ },
+                onClick = {
+                    val receiptGenerator = ReceiptGenerator(navController.context)
+                    val file = receiptGenerator.generatePdfReceipt(invoice, items)
+                },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
             ) {
-                Text("Print Invoice")
+                Text("Generate PDF Receipt")
             }
 
             Button(
-                onClick = { /* PDF export */ },
+                onClick = {
+                    val receiptGenerator = ReceiptGenerator(navController.context)
+                    receiptGenerator.printReceipt(invoice, items)
+                },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981))
             ) {
-                Text("Export PDF")
+                Text("Print Receipt")
             }
 
             Button(
-                onClick = { /* WhatsApp share */ },
+                onClick = {
+                    val receiptGenerator = ReceiptGenerator(navController.context)
+                    receiptGenerator.shareViaWhatsApp(invoice, items)
+                },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF25D366))
             ) {
                 Text("Share via WhatsApp")
             }
@@ -150,7 +171,8 @@ fun InvoicePreviewScreen(
             Button(
                 onClick = { navController.popBackStack() },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEF4444))
             ) {
                 Text("Back")
             }

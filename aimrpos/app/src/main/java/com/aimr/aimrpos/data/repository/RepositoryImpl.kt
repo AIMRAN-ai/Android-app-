@@ -86,6 +86,20 @@ class ProductRepositoryImpl(private val dao: ProductDao) : ProductRepository {
     override fun search(query: String): Flow<List<Product>> = dao.search(query).map { it.map { it.toDomain() } }
     override fun getByCategory(categoryId: String): Flow<List<Product>> = dao.getByCategory(categoryId).map { it.map { it.toDomain() } }
     override fun getLowStock(): Flow<List<Product>> = dao.getLowStock().map { it.map { it.toDomain() } }
+    override suspend fun getByBarcode(barcode: String): Product? {
+        return dao.getByBarcode(barcode)?.toDomain()
+    }
+    override suspend fun getByQrCode(qrCode: String): Product? {
+        return dao.getByQrCode(qrCode)?.toDomain()
+    }
+    override fun getByProductType(type: String): Flow<List<Product>> = dao.getByProductType(type).map { it.map { it.toDomain() } }
+    override suspend fun deductStock(productId: String, quantity: Double): Boolean {
+        val rowsAffected = dao.deductStock(productId, quantity)
+        return rowsAffected > 0
+    }
+    override suspend fun addStock(productId: String, quantity: Double) {
+        dao.addStock(productId, quantity)
+    }
     override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
 }
 

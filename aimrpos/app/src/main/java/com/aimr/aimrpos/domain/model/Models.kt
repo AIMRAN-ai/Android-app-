@@ -9,16 +9,33 @@ data class Product(
     val nameUr: String? = null,
     val sku: String = "",
     val barcode: String? = null,
+    val qrCode: String? = null,
+    val productType: String = "PHYSICAL",
     val categoryId: String = "",
     val costPrice: Double = 0.0,
     val salePrice: Double = 0.0,
     val stockQty: Double = 0.0,
     val unit: String = "pcs",
     val lowStockThreshold: Double = 5.0,
+    val imagePath: String? = null,
+    val taxRate: Double = 17.0,
+    val discountPercent: Double = 0.0,
+    val isActive: Boolean = true,
     val updatedAt: Long = 0L,
     val isDeleted: Boolean = false,
     val syncStatus: String = "PENDING"
 )
+
+enum class ProductType(val label: String, val code: String) {
+    PHYSICAL("Physical Goods", "PHYSICAL"),
+    PERISHABLE("Perishable", "PERISHABLE"),
+    DIGITAL("Digital Product", "DIGITAL"),
+    SERVICE("Service", "SERVICE"),
+    WHOLESALE("Wholesale", "WHOLESALE"),
+    RETAIL("Retail", "RETAIL"),
+    RAW_MATERIAL("Raw Material", "RAW_MATERIAL"),
+    FINISHED_GOODS("Finished Goods", "FINISHED_GOODS")
+}
 
 @Stable
 data class Invoice(
