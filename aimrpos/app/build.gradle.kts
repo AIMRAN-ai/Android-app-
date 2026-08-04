@@ -91,6 +91,19 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // OAuth / Social Login
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("net.openid:appauth:0.11.1")
+
+    // Security
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation("com.scottyab:root-beer:0.1.0")
+    implementation("androidx.biometric:biometric:1.1.0")
+
+    // Performance / monitoring
+    implementation("androidx.paging:paging-runtime:3.2.1")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation(platform("androidx.compose.compose-bom:2024.02.00"))

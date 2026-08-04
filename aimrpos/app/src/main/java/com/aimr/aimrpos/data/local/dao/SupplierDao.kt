@@ -32,10 +32,4 @@ interface SupplierDao {
 
     @Query("CREATE INDEX IF NOT EXISTS idx_suppliers_sync_status ON suppliers(syncStatus)")
     suspend fun indexSyncStatus()
-
-    @Query("CREATE INDEX IF NOT EXISTS idx_suppliers_balance ON suppliers(currentBalance)")
-    suspend fun indexBalance()
-
-    @Query("CREATE INDEX IF NOT EXISTS idx_suppliers_business ON suppliers(businessId)")
-    suspend fun indexBusiness()
 }

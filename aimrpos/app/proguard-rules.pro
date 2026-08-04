@@ -1,67 +1,72 @@
-# AIMR POS ProGuard Rules
+# AIMR POS ProGuard Rules - Security Hardening
 
-# Keep Room entities
--keep class com.aimr.aimrpos.data.local.entity.** { *; }
+# Keep security classes
+-keep class com.aimr.aimrpos.security.** { *; }
+-keep class com.aimr.aimrpos.crypto.** { *; }
 
-# Keep Room DAOs
--keep class com.aimr.aimrpos.data.local.dao.** { *; }
+# Keep Room entities and DAOs
+-keep @androidx.room.Entity class * { *; }
+-keep @androidx.room.Dao interface * { *; }
 
-# Keep Room Database
--keep class com.aimr.aimrpos.data.local.AimrPosDatabase { *; }
-
-# Keep Hilt classes
--keep class com.aimr.aimrpos.di.** { *; }
+# Keep Hilt injection
 -keep class dagger.hilt.** { *; }
+-keep class javax.inject.** { *; }
+-keep class * extends dagger.hilt.android.lifecycle.HiltViewModel { *; }
 
-# Keep ViewModels
--keep class com.aimr.aimrpos.presentation.**.ViewModel { *; }
-
-# Keep domain models
--keep class com.aimr.aimrpos.domain.model.** { *; }
-
-# Keep navigation classes
--keep class com.aimr.aimrpos.navigation.** { *; }
-
-# Keep Compose components
--keep class com.aimr.aimrpos.presentation.** { *; }
-
-# Keep Supabase classes
--keep class io.github.jan-tennert.supabase.** { *; }
-
-# Keep ML Kit classes
+# Keep ML Kit
 -keep class com.google.mlkit.** { *; }
+-keep class com.google.android.gms.** { *; }
 
-# Keep CameraX classes
+# Keep Supabase
+-keep class io.github.jan-tennert.** { *; }
+
+# Keep Compose
+-keep class androidx.compose.** { *; }
+
+# Obfuscate everything else
+-repackageclasses
+-allowaccessmodification
+-overloadaggressively
+
+# Remove logging in release
+-assumenosideeffects class android.util.Log {
+    public static *** v(...);
+    public static *** d(...);
+    public static *** i(...);
+}
+
+# Security: prevent reflection attacks
+-keepattributes *Annotation*
+-dontwarn java.lang.invoke.*
+
+# Prevent reverse engineering
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+# Keep serialization classes
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# Firebase Crashlytics
+-keep class com.google.firebase.crashlytics.** { *; }
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+
+# Biometric
+-keep class androidx.biometric.** { *; }
+
+# CameraX
 -keep class androidx.camera.** { *; }
 
-# Keep Vico chart classes
--keep class com.patrykandpatrick.vico.** { *; }
-
-# Keep WorkManager classes
--keep class androidx.work.** { *; }
-
-# Optimization: remove unused code
--dontnote **
--dontwarn **
--ignorewarnings
-
-# Keep annotations
--keepattributes *Annotation*
-
-# Keep native methods
--keepclasseswithmembernames class * {
-    native <methods>;
+# Kotlin serialization
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+-keepclassmembers @kotlinx.serialization.Serializable class * {
+    static ** Companion;
 }
-
-# Keep enum values
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
-
-# Keep R classes
--keep class **.R { *; }
--keep class **.R$* { *; }
-
-# Keep BuildConfig
--keep class **.BuildConfig { *; }

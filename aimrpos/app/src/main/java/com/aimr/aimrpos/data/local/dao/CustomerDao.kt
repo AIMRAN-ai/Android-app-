@@ -31,6 +31,6 @@ interface CustomerDao {
     @Query("CREATE INDEX IF NOT EXISTS idx_customers_sync_status ON customers(syncStatus)")
     suspend fun indexSyncStatus()
 
-    @Query("CREATE INDEX IF NOT EXISTS idx_customers_credit ON customers(creditBalance)")
-    suspend fun indexCredit()
+    @Query("CREATE INDEX IF NOT EXISTS idx_customers_phone ON customers(phone)")
+    suspend fun indexPhone()
 }

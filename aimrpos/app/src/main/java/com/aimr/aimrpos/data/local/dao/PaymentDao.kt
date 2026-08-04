@@ -33,12 +33,12 @@ interface PaymentDao {
     @Query("UPDATE payments SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
 
-    @Query("CREATE INDEX IF NOT EXISTS idx_payment_sync_status ON payments(syncStatus)")
+    @Query("CREATE INDEX IF NOT EXISTS idx_payments_sync_status ON payments(syncStatus)")
     suspend fun indexSyncStatus()
 
-    @Query("CREATE INDEX IF NOT EXISTS idx_payment_invoice ON payments(invoiceId)")
+    @Query("CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoiceId)")
     suspend fun indexInvoice()
 
-    @Query("CREATE INDEX IF NOT EXISTS idx_payment_customer ON payments(customerId)")
+    @Query("CREATE INDEX IF NOT EXISTS idx_payments_customer ON payments(customerId)")
     suspend fun indexCustomer()
 }

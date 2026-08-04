@@ -32,4 +32,13 @@ interface AuditLogDao {
 
     @Query("SELECT * FROM audit_log WHERE entityType = :type ORDER BY timestamp DESC")
     fun getByEntityType(type: String): Flow<List<AuditLogEntity>>
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_audit_log_business ON audit_log(businessId)")
+    suspend fun indexBusiness()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_audit_log_timestamp ON audit_log(timestamp)")
+    suspend fun indexTimestamp()
+
+    @Query("CREATE INDEX IF NOT EXISTS idx_audit_log_entity ON audit_log(entityType, entityId)")
+    suspend fun indexEntity()
 }
