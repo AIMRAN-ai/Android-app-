@@ -21,8 +21,16 @@ import com.aimr.aimrpos.data.local.dao.StockLedgerDao
 import com.aimr.aimrpos.data.local.dao.StockTransferDao
 import com.aimr.aimrpos.data.local.dao.SupplierDao
 import com.aimr.aimrpos.data.local.dao.UserDao
-import com.aimr.aimrpos.data.local.entity.AuditLogEntity
-import com.aimr.aimrpos.data.local.entity.ApprovalRequestEntity
+import com.aimr.aimrpos.data.local.entity.RoleEntity
+import com.aimr.aimrpos.data.local.entity.PermissionEntity
+import com.aimr.aimrpos.data.local.entity.UserRoleEntity
+import com.aimr.aimrpos.data.local.entity.CurrencyEntity
+import com.aimr.aimrpos.data.local.entity.WorkflowRuleEntity
+import com.aimr.aimrpos.data.local.entity.SalesForecastEntity
+import com.aimr.aimrpos.data.local.entity.AnalyticsSnapshotEntity
+import com.aimr.aimrpos.data.local.entity.NotificationEntity
+import com.aimr.aimrpos.data.local.entity.ExchangeRateEntity
+import com.aimr.aimrpos.data.local.entity.BusinessUnitEntity
 import com.aimr.aimrpos.data.local.entity.BusinessEntity
 import com.aimr.aimrpos.data.local.entity.CategoryEntity
 import com.aimr.aimrpos.data.local.entity.CustomerEntity
@@ -63,9 +71,19 @@ import com.aimr.aimrpos.data.local.entity.UserEntity
         SupplierEntity::class,
         StockTransferEntity::class,
         StockLedgerEntity::class,
-        PaymentEntity::class
+        PaymentEntity::class,
+        RoleEntity::class,
+        PermissionEntity::class,
+        UserRoleEntity::class,
+        CurrencyEntity::class,
+        WorkflowRuleEntity::class,
+        SalesForecastEntity::class,
+        AnalyticsSnapshotEntity::class,
+        NotificationEntity::class,
+        ExchangeRateEntity::class,
+        BusinessUnitEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class AimrPosDatabase : RoomDatabase() {
@@ -89,4 +107,14 @@ abstract class AimrPosDatabase : RoomDatabase() {
     abstract fun stockTransferDao(): StockTransferDao
     abstract fun stockLedgerDao(): StockLedgerDao
     abstract fun paymentDao(): PaymentDao
+    abstract fun roleDao(): RoleDao
+    abstract fun permissionDao(): PermissionDao
+    abstract fun userRoleDao(): UserRoleDao
+    abstract fun currencyDao(): CurrencyDao
+    abstract fun exchangeRateDao(): ExchangeRateDao
+    abstract fun workflowRuleDao(): WorkflowRuleDao
+    abstract fun salesForecastDao(): SalesForecastDao
+    abstract fun analyticsSnapshotDao(): AnalyticsSnapshotDao
+    abstract fun notificationDao(): NotificationDao
+    abstract fun businessUnitDao(): BusinessUnitDao
 }

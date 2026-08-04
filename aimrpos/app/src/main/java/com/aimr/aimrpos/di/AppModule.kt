@@ -96,6 +96,36 @@ object AppModule {
     fun providePaymentDao(database: AimrPosDatabase): PaymentDao = database.paymentDao()
 
     @Provides
+    fun provideRoleDao(database: AimrPosDatabase): RoleDao = database.roleDao()
+
+    @Provides
+    fun providePermissionDao(database: AimrPosDatabase): PermissionDao = database.permissionDao()
+
+    @Provides
+    fun provideUserRoleDao(database: AimrPosDatabase): UserRoleDao = database.userRoleDao()
+
+    @Provides
+    fun provideCurrencyDao(database: AimrPosDatabase): CurrencyDao = database.currencyDao()
+
+    @Provides
+    fun provideExchangeRateDao(database: AimrPosDatabase): ExchangeRateDao = database.exchangeRateDao()
+
+    @Provides
+    fun provideWorkflowRuleDao(database: AimrPosDatabase): WorkflowRuleDao = database.workflowRuleDao()
+
+    @Provides
+    fun provideSalesForecastDao(database: AimrPosDatabase): SalesForecastDao = database.salesForecastDao()
+
+    @Provides
+    fun provideAnalyticsSnapshotDao(database: AimrPosDatabase): AnalyticsSnapshotDao = database.analyticsSnapshotDao()
+
+    @Provides
+    fun provideNotificationDao(database: AimrPosDatabase): NotificationDao = database.notificationDao()
+
+    @Provides
+    fun provideBusinessUnitDao(database: AimrPosDatabase): BusinessUnitDao = database.businessUnitDao()
+
+    @Provides
     @Singleton
     fun provideProductRepository(dao: ProductDao): ProductRepository = ProductRepositoryImpl(dao)
 
@@ -122,4 +152,44 @@ object AppModule {
     @Provides
     @Singleton
     fun provideCategoryRepository(dao: CategoryDao): CategoryRepository = CategoryRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideRoleRepository(dao: RoleDao): RoleRepository = RoleRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun providePermissionRepository(dao: PermissionDao): PermissionRepository = PermissionRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideUserRoleRepository(dao: UserRoleDao): UserRoleRepository = UserRoleRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideCurrencyRepository(dao: CurrencyDao): CurrencyRepository = CurrencyRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideExchangeRateRepository(dao: ExchangeRateDao): ExchangeRateRepository = ExchangeRateRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideWorkflowRuleRepository(dao: WorkflowRuleDao): WorkflowRuleRepository = WorkflowRuleRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideSalesForecastRepository(dao: SalesForecastDao): SalesForecastRepository = SalesForecastRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideAnalyticsSnapshotRepository(dao: AnalyticsSnapshotDao): AnalyticsSnapshotRepository = AnalyticsSnapshotRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(dao: NotificationDao): NotificationRepository = NotificationRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideBusinessUnitRepository(dao: BusinessUnitDao): BusinessUnitRepository = BusinessUnitRepositoryImpl(dao)
 }

@@ -475,3 +475,201 @@ fun AuditLog.toEntity(): AuditLogEntity = AuditLogEntity(
     newValueJson = newValueJson, deviceId = deviceId,
     ipAddress = ipAddress, timestamp = timestamp
 )
+
+class RoleRepositoryImpl(private val dao: RoleDao) : RoleRepository {
+    override suspend fun upsert(role: com.aimr.aimrpos.domain.model.Role) = dao.upsert(role.toEntity())
+    override suspend fun getById(id: String) = dao.getById(id)?.toDomain()
+    override fun getAll() = dao.getAll().map { it.map { it.toDomain() } }
+    override fun getSystemRoles() = dao.getSystemRoles().map { it.map { it.toDomain() } }
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+class PermissionRepositoryImpl(private val dao: PermissionDao) : PermissionRepository {
+    override suspend fun insert(permission: com.aimr.aimrpos.domain.model.Permission) = dao.insert(permission.toEntity())
+    override fun getAll() = dao.getAll().map { it.map { it.toDomain() } }
+    override fun getByCategory(category: String) = dao.getByCategory(category).map { it.map { it.toDomain() } }
+    override suspend fun getByKey(key: String) = dao.getByKey(key)?.toDomain()
+}
+
+class UserRoleRepositoryImpl(private val dao: UserRoleDao) : UserRoleRepository {
+    override suspend fun assign(userId: String, roleId: String, assignedBy: String) {
+        dao.insert(com.aimr.aimrpos.domain.model.UserRole(userId = userId, roleId = roleId, assignedByUserId = assignedBy).toEntity())
+    }
+    override fun getByUser(userId: String) = dao.getByUser(userId).map { it.map { it.toDomain() } }
+    override fun getByRole(roleId: String) = dao.getByRole(roleId).map { it.map { it.toDomain() } }
+    override suspend fun revoke(userId: String, roleId: String) = dao.delete(userId, roleId)
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+class CurrencyRepositoryImpl(private val dao: CurrencyDao) : CurrencyRepository {
+    override suspend fun upsert(currency: com.aimr.aimrpos.domain.model.Currency) = dao.upsert(currency.toEntity())
+    override fun getAll() = dao.getAll().map { it.map { it.toDomain() } }
+    override suspend fun getByCode(code: String) = dao.getByCode(code)?.toDomain()
+    override suspend fun getBaseCurrency() = dao.getBaseCurrency()?.toDomain()
+    override suspend fun updateRate(code: String, rate: Double) = dao.updateRate(code, rate)
+    override suspend fun updateSyncStatus(code: String, status: String) = dao.updateSyncStatus(code, status)
+}
+
+class ExchangeRateRepositoryImpl(private val dao: ExchangeRateDao) : ExchangeRateRepository {
+    override suspend fun saveRate(rate: com.aimr.aimrpos.domain.model.ExchangeRate) = dao.insert(rate.toEntity())
+    override suspend fun getLatest(from: String, to: String) = dao.getLatest(from, to)?.toDomain()
+    override suspend fun getAtDate(from: String, to: String, date: Long) = dao.getAtDate(from, to, date)?.toDomain()
+    override fun getAllActive() = dao.getAllActive().map { it.map { it.toDomain() } }
+}
+
+class WorkflowRuleRepositoryImpl(private val dao: WorkflowRuleDao) : WorkflowRuleRepository {
+    override suspend fun upsert(rule: com.aimr.aimrpos.domain.model.WorkflowRule) = dao.upsert(rule.toEntity())
+    override fun getActiveRules() = dao.getActiveRules().map { it.map { it.toDomain() } }
+    override suspend fun getRule(entityType: String, action: String) = dao.getRule(entityType, action)?.toDomain()
+    override suspend fun setActive(id: String, isActive: Boolean) = dao.setActive(id, isActive)
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+class SalesForecastRepositoryImpl(private val dao: SalesForecastDao) : SalesForecastRepository {
+    override suspend fun save(forecast: com.aimr.aimrpos.domain.model.SalesForecast) = dao.insert(forecast.toEntity())
+    override fun getBetween(from: Long, to: Long) = dao.getBetween(from, to).map { it.map { it.toDomain() } }
+    override fun getForProduct(productId: String, limit: Int) = dao.getForProduct(productId, limit).map { it.map { it.toDomain() } }
+    override fun getForCategory(categoryId: String, limit: Int) = dao.getForCategory(categoryId, limit).map { it.map { it.toDomain() } }
+}
+
+class AnalyticsSnapshotRepositoryImpl(private val dao: AnalyticsSnapshotDao) : AnalyticsSnapshotRepository {
+    override suspend fun save(snapshot: com.aimr.aimrpos.domain.model.AnalyticsSnapshot) = dao.insert(snapshot.toEntity())
+    override fun getLatest(period: String, limit: Int) = dao.getLatest(period, limit).map { it.map { it.toDomain() } }
+    override fun getBetween(from: Long, to: Long) = dao.getBetween(from, to).map { it.map { it.toDomain() } }
+    override suspend fun getLatestSnapshot() = dao.getLatestSnapshot()?.toDomain()
+}
+
+class NotificationRepositoryImpl(private val dao: NotificationDao) : NotificationRepository {
+    override suspend fun insert(notification: com.aimr.aimrpos.domain.model.Notification) = dao.insert(notification.toEntity())
+    override fun getByUser(userId: String) = dao.getByUser(userId).map { it.map { it.toDomain() } }
+    override fun getUnreadByUser(userId: String) = dao.getUnreadByUser(userId).map { it.map { it.toDomain() } }
+    override suspend fun markAsRead(id: String) = dao.markAsRead(id)
+    override suspend fun markAllAsRead(userId: String) = dao.markAllAsRead(userId)
+    override suspend fun deleteById(id: String) = dao.deleteById(id)
+    override suspend fun deleteOlderThan(userId: String, olderThan: Long) = dao.deleteOlderThan(userId, olderThan)
+}
+
+class BusinessUnitRepositoryImpl(private val dao: BusinessUnitDao) : BusinessUnitRepository {
+    override suspend fun insert(unit: com.aimr.aimrpos.domain.model.BusinessUnit) = dao.insert(unit.toEntity())
+    override fun getActiveForBusiness(businessId: String) = dao.getActiveForBusiness(businessId).map { it.map { it.toDomain() } }
+    override suspend fun getById(id: String) = dao.getById(id)?.toDomain()
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+fun RoleEntity.toDomain(): com.aimr.aimrpos.domain.model.Role = com.aimr.aimrpos.domain.model.Role(
+    id = id, name = name, nameUr = nameUr, description = description,
+    permissionsJson = permissionsJson, isSystemRole = isSystemRole,
+    createdAt = createdAt, updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.Role.toEntity(): RoleEntity = RoleEntity(
+    id = id, name = name, nameUr = nameUr, description = description,
+    permissionsJson = permissionsJson, isSystemRole = isSystemRole,
+    createdAt = createdAt, updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun PermissionEntity.toDomain(): com.aimr.aimrpos.domain.model.Permission = com.aimr.aimrpos.domain.model.Permission(
+    id = id, key = key, category = category, description = description, createdAt = createdAt, isDeleted = isDeleted
+)
+
+fun com.aimr.aimrpos.domain.model.Permission.toEntity(): PermissionEntity = PermissionEntity(
+    id = id, key = key, category = category, description = description, createdAt = createdAt, isDeleted = isDeleted
+)
+
+fun UserRoleEntity.toDomain(): com.aimr.aimrpos.domain.model.UserRole = com.aimr.aimrpos.domain.model.UserRole(
+    id = id, userId = userId, roleId = roleId, assignedByUserId = assignedByUserId,
+    assignedAt = assignedAt, expiresAt = expiresAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.UserRole.toEntity(): UserRoleEntity = UserRoleEntity(
+    id = id, userId = userId, roleId = roleId, assignedByUserId = assignedByUserId,
+    assignedAt = assignedAt, expiresAt = expiresAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun CurrencyEntity.toDomain(): com.aimr.aimrpos.domain.model.Currency = com.aimr.aimrpos.domain.model.Currency(
+    id = code, code = code, name = name, symbol = symbol, exchangeRate = exchangeRate,
+    isBaseCurrency = isBaseCurrency, updatedAt = updatedAt, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.Currency.toEntity(): CurrencyEntity = CurrencyEntity(
+    code = code, name = name, symbol = symbol, exchangeRate = exchangeRate,
+    isBaseCurrency = isBaseCurrency, updatedAt = updatedAt, syncStatus = syncStatus
+)
+
+fun ExchangeRateEntity.toDomain(): com.aimr.aimrpos.domain.model.ExchangeRate = com.aimr.aimrpos.domain.model.ExchangeRate(
+    id = id, fromCurrency = fromCurrency, toCurrency = toCurrency, rate = rate,
+    validFrom = validFrom, validTo = validTo, source = source, createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.ExchangeRate.toEntity(): ExchangeRateEntity = ExchangeRateEntity(
+    id = id, fromCurrency = fromCurrency, toCurrency = toCurrency, rate = rate,
+    validFrom = validFrom, validTo = validTo, source = source, createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun WorkflowRuleEntity.toDomain(): com.aimr.aimrpos.domain.model.WorkflowRule = com.aimr.aimrpos.domain.model.WorkflowRule(
+    id = id, name = name, entityType = entityType, action = action,
+    conditionsJson = conditionsJson, autoApprove = autoAppve, notifyUsersJson = notifyUsersJson,
+    isActive = isActive, createdAt = createdAt, updatedAt = updatedAt, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.WorkflowRule.toEntity(): WorkflowRuleEntity = WorkflowRuleEntity(
+    id = id, name = name, entityType = entityType, action = action,
+    conditionsJson = conditionsJson, autoAppve = autoApprove, notifyUsersJson = notifyUsersJson,
+    isActive = isActive, createdAt = createdAt, updatedAt = updatedAt, syncStatus = syncStatus
+)
+
+fun SalesForecastEntity.toDomain(): com.aimr.aimrpos.domain.model.SalesForecast = com.aimr.aimrpos.domain.model.SalesForecast(
+    id = id, productId = productId, categoryId = categoryId, forecastDate = forecastDate,
+    predictedQty = predictedQty, predictedRevenue = predictedRevenue, confidence = confidence,
+    modelVersion = modelVersion, createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.SalesForecast.toEntity(): SalesForecastEntity = SalesForecastEntity(
+    id = id, productId = productId, categoryId = categoryId, forecastDate = forecastDate,
+    predictedQty = predictedQty, predictedRevenue = predictedRevenue, confidence = confidence,
+    modelVersion = modelVersion, createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun AnalyticsSnapshotEntity.toDomain(): com.aimr.aimrpos.domain.model.AnalyticsSnapshot = com.aimr.aimrpos.domain.model.AnalyticsSnapshot(
+    id = id, snapshotDate = snapshotDate, period = period,
+    totalSales = totalSales, totalOrders = totalOrders, avgOrderValue = avgOrderValue,
+    totalCustomers = totalCustomers, totalProducts = totalProducts, lowStockCount = lowStockCount,
+    outstandingCredit = outstandingCredit, stockValuation = stockValuation,
+    topProductsJson = topProductsJson, topCustomersJson = topCustomersJson,
+    createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.AnalyticsSnapshot.toEntity(): AnalyticsSnapshotEntity = AnalyticsSnapshotEntity(
+    id = id, snapshotDate = snapshotDate, period = period,
+    totalSales = totalSales, totalOrders = totalOrders, avgOrderValue = avgOrderValue,
+    totalCustomers = totalCustomers, totalProducts = totalProducts, lowStockCount = lowStockCount,
+    outstandingCredit = outstandingCredit, stockValuation = stockValuation,
+    topProductsJson = topProductsJson, topCustomersJson = topCustomersJson,
+    createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun NotificationEntity.toDomain(): com.aimr.aimrpos.domain.model.Notification = com.aimr.aimrpos.domain.model.Notification(
+    id = id, userId = userId, title = title, message = message, type = type,
+    relatedEntityType = relatedEntityType, relatedEntityId = relatedEntityId,
+    isRead = isRead, readAt = readAt, createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.Notification.toEntity(): NotificationEntity = NotificationEntity(
+    id = id, userId = userId, title = title, message = message, type = type,
+    relatedEntityType = relatedEntityType, relatedEntityId = relatedEntityId,
+    isRead = isRead, readAt = readAt, createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun BusinessUnitEntity.toDomain(): com.aimr.aimrpos.domain.model.BusinessUnit = com.aimr.aimrpos.domain.model.BusinessUnit(
+    id = id, businessId = businessId, name = name, nameUr = nameUr, address = address,
+    phone = phone, email = email, managerUserId = managerUserId, timezone = timezone,
+    currencyCode = currencyCode, taxNumber = taxNumber, isActive = isActive,
+    createdAt = createdAt, updatedAt = updatedAt, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.BusinessUnit.toEntity(): BusinessUnitEntity = BusinessUnitEntity(
+    id = id, businessId = businessId, name = name, nameUr = nameUr, address = address,
+    phone = phone, email = email, managerUserId = managerUserId, timezone = timezone,
+    currencyCode = currencyCode, taxNumber = taxNumber, isActive = isActive,
+    createdAt = createdAt, updatedAt = updatedAt, syncStatus = syncStatus
+)

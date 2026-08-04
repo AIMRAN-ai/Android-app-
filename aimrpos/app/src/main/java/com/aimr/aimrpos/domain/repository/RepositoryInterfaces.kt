@@ -171,3 +171,81 @@ interface PaymentRepository {
     fun getBySupplier(supplierId: String): Flow<List<Payment>>
     suspend fun updateSyncStatus(id: String, status: String)
 }
+
+interface RoleRepository {
+    suspend fun upsert(role: com.aimr.aimrpos.domain.model.Role)
+    suspend fun getById(id: String): com.aimr.aimrpos.domain.model.Role?
+    fun getAll(): Flow<List<com.aimr.aimrpos.domain.model.Role>>
+    fun getSystemRoles(): Flow<List<com.aimr.aimrpos.domain.model.Role>>
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface PermissionRepository {
+    suspend fun insert(permission: com.aimr.aimrpos.domain.model.Permission)
+    fun getAll(): Flow<List<com.aimr.aimrpos.domain.model.Permission>>
+    fun getByCategory(category: String): Flow<List<com.aimr.aimrpos.domain.model.Permission>>
+    suspend fun getByKey(key: String): com.aimr.aimrpos.domain.model.Permission?
+}
+
+interface UserRoleRepository {
+    suspend fun assign(userId: String, roleId: String, assignedBy: String)
+    fun getByUser(userId: String): Flow<List<com.aimr.aimrpos.domain.model.UserRole>>
+    fun getByRole(roleId: String): Flow<List<com.aimr.aimrpos.domain.model.UserRole>>
+    suspend fun revoke(userId: String, roleId: String)
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface CurrencyRepository {
+    suspend fun upsert(currency: com.aimr.aimrpos.domain.model.Currency)
+    fun getAll(): Flow<List<com.aimr.aimrpos.domain.model.Currency>>
+    suspend fun getByCode(code: String): com.aimr.aimrpos.domain.model.Currency?
+    suspend fun getBaseCurrency(): com.aimr.aimrpos.domain.model.Currency?
+    suspend fun updateRate(code: String, rate: Double)
+    suspend fun updateSyncStatus(code: String, status: String)
+}
+
+interface ExchangeRateRepository {
+    suspend fun saveRate(rate: com.aimr.aimrpos.domain.model.ExchangeRate)
+    suspend fun getLatest(from: String, to: String): com.aimr.aimrpos.domain.model.ExchangeRate?
+    suspend fun getAtDate(from: String, to: String, date: Long): com.aimr.aimrpos.domain.model.ExchangeRate?
+    fun getAllActive(): Flow<List<com.aimr.aimrpos.domain.model.ExchangeRate>>
+}
+
+interface WorkflowRuleRepository {
+    suspend fun upsert(rule: com.aimr.aimrpos.domain.model.WorkflowRule)
+    fun getActiveRules(): Flow<List<com.aimr.aimrpos.domain.model.WorkflowRule>>
+    suspend fun getRule(entityType: String, action: String): com.aimr.aimrpos.domain.model.WorkflowRule?
+    suspend fun setActive(id: String, isActive: Boolean)
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface SalesForecastRepository {
+    suspend fun save(forecast: com.aimr.aimrpos.domain.model.SalesForecast)
+    fun getBetween(from: Long, to: Long): Flow<List<com.aimr.aimrpos.domain.model.SalesForecast>>
+    fun getForProduct(productId: String, limit: Int = 30): Flow<List<com.aimr.aimrpos.domain.model.SalesForecast>>
+    fun getForCategory(categoryId: String, limit: Int = 30): Flow<List<com.aimr.aimrpos.domain.model.SalesForecast>>
+}
+
+interface AnalyticsSnapshotRepository {
+    suspend fun save(snapshot: com.aimr.aimrpos.domain.model.AnalyticsSnapshot)
+    fun getLatest(period: String = "DAILY", limit: Int = 30): Flow<List<com.aimr.aimrpos.domain.model.AnalyticsSnapshot>>
+    fun getBetween(from: Long, to: Long): Flow<List<com.aimr.aimrpos.domain.model.AnalyticsSnapshot>>
+    suspend fun getLatestSnapshot(): com.aimr.aimrpos.domain.model.AnalyticsSnapshot?
+}
+
+interface NotificationRepository {
+    suspend fun insert(notification: com.aimr.aimrpos.domain.model.Notification)
+    fun getByUser(userId: String): Flow<List<com.aimr.aimrpos.domain.model.Notification>>
+    fun getUnreadByUser(userId: String): Flow<List<com.aimr.aimrpos.domain.model.Notification>>
+    suspend fun markAsRead(id: String)
+    suspend fun markAllAsRead(userId: String)
+    suspend fun deleteById(id: String)
+    suspend fun deleteOlderThan(userId: String, olderThan: Long)
+}
+
+interface BusinessUnitRepository {
+    suspend fun insert(unit: com.aimr.aimrpos.domain.model.BusinessUnit)
+    fun getActiveForBusiness(businessId: String): Flow<List<com.aimr.aimrpos.domain.model.BusinessUnit>>
+    suspend fun getById(id: String): com.aimr.aimrpos.domain.model.BusinessUnit?
+    suspend fun updateSyncStatus(id: String, status: String)
+}

@@ -177,3 +177,70 @@ class ManualEntryExtension : DataSourceExtension {
         return emptyList()
     }
 }
+
+class HasPermissionUseCase {
+    operator fun invoke(userPermissions: List<String>, requiredPermission: String): Boolean {
+        return userPermissions.contains(requiredPermission)
+    }
+}
+
+class ConvertCurrencyUseCase {
+    operator fun invoke(amount: Double, fromRate: Double, toRate: Double): Double {
+        return amount / fromRate * toRate
+    }
+}
+
+class EvaluateWorkflowRuleUseCase {
+    operator fun invoke(rule: com.aimr.aimrpos.domain.model.WorkflowRule, context: Map<String, Any>): Boolean {
+        val conditions = kotlinx.serialization.json.Json.parseToJsonElement(rule.conditionsJson).jsonObject
+        return conditions.all { (key, value) ->
+            context[key]?.toString() == value.jsonPrimitive.content
+        }
+    }
+}
+
+class GenerateAnalyticsSnapshotUseCase {
+    operator fun invoke(
+        totalSales: Double,
+        totalOrders: Int,
+        totalCustomers: Int,
+        totalProducts: Int,
+        lowStockCount: Int,
+        outstandingCredit: Double,
+        stockValuation: Double
+    ): com.aimr.aimrpos.domain.model.AnalyticsSnapshot {
+        val avgOrderValue = if (totalOrders > 0) totalSales / totalOrders else 0.0
+        return com.aimr.aimrpos.domain.model.AnalyticsSnapshot(
+            snapshotDate = System.currentTimeMillis(),
+            period = "DAILY",
+            totalSales = totalSales,
+            totalOrders = totalOrders,
+            avgOrderValue = avgOrderValue,
+            totalCustomers = totalCustomers,
+            totalProducts = totalProducts,
+            lowStockCount = lowStockCount,
+            outstandingCredit = outstandingCredit,
+            stockValuation = stockValuation
+        )
+    }
+}
+
+class CreateNotificationUseCase {
+    operator fun invoke(
+        userId: String,
+        title: String,
+        message: String,
+        type: String = "INFO",
+        relatedEntityType: String? = null,
+        relatedEntityId: String? = null
+    ): com.aimr.aimrpos.domain.model.Notification {
+        return com.aimr.aimrpos.domain.model.Notification(
+            userId = userId,
+            title = title,
+            message = message,
+            type = type,
+            relatedEntityType = relatedEntityType,
+            relatedEntityId = relatedEntityId
+        )
+    }
+}
