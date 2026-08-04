@@ -36,6 +36,7 @@ import com.aimr.aimrpos.data.local.entity.ProductEntity
 import com.aimr.aimrpos.data.local.entity.PurchaseOrderEntity
 import com.aimr.aimrpos.data.local.entity.PurchaseOrderItemEntity
 import com.aimr.aimrpos.data.local.entity.ReturnInvoiceEntity
+import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
 import com.aimr.aimrpos.data.local.entity.StockLedgerEntity
 import com.aimr.aimrpos.data.local.entity.StockTransferEntity
 import com.aimr.aimrpos.data.local.entity.SupplierEntity
@@ -56,6 +57,7 @@ import com.aimr.aimrpos.data.local.entity.UserEntity
         ReturnInvoiceEntity::class,
         AuditLogEntity::class,
         DocumentVaultEntity::class,
+        ScanSessionEntity::class,
         LocationEntity::class,
         ApprovalRequestEntity::class,
         SupplierEntity::class,
@@ -63,7 +65,7 @@ import com.aimr.aimrpos.data.local.entity.UserEntity
         StockLedgerEntity::class,
         PaymentEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class AimrPosDatabase : RoomDatabase() {
@@ -80,6 +82,7 @@ abstract class AimrPosDatabase : RoomDatabase() {
     abstract fun returnInvoiceDao(): ReturnInvoiceDao
     abstract fun auditLogDao(): AuditLogDao
     abstract fun documentVaultDao(): DocumentVaultDao
+    abstract fun scanSessionDao(): ScanSessionDao
     abstract fun locationDao(): LocationDao
     abstract fun approvalRequestDao(): ApprovalRequestDao
     abstract fun supplierDao(): SupplierDao

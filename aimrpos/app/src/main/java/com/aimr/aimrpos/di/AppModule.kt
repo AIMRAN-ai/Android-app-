@@ -78,6 +78,9 @@ object AppModule {
     fun provideDocumentVaultDao(database: AimrPosDatabase): DocumentVaultDao = database.documentVaultDao()
 
     @Provides
+    fun provideScanSessionDao(database: AimrPosDatabase): ScanSessionDao = database.scanSessionDao()
+
+    @Provides
     fun provideApprovalRequestDao(database: AimrPosDatabase): ApprovalRequestDao = database.approvalRequestDao()
 
     @Provides

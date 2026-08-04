@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.aimr.aimrpos.data.local.entity.DocumentVaultEntity
+import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,6 +15,9 @@ interface DocumentVaultDao {
 
     @Query("SELECT * FROM scanned_documents WHERE id = :id")
     suspend fun getById(id: String): DocumentVaultEntity?
+
+    @Query("SELECT * FROM scanned_documents WHERE sessionId = :sessionId AND isDeleted = 0 ORDER BY pageNumber ASC")
+    fun getBySession(sessionId: String): Flow<List<DocumentVaultEntity>>
 
     @Query("SELECT * FROM scanned_documents WHERE isDeleted = 0 ORDER BY uploadedAt DESC")
     fun getAll(): Flow<List<DocumentVaultEntity>>
@@ -30,9 +34,45 @@ interface DocumentVaultDao {
     @Query("SELECT * FROM scanned_documents WHERE extractionStatus = :status AND isDeleted = 0")
     fun getByExtractionStatus(status: String): Flow<List<DocumentVaultEntity>>
 
+    @Query("SELECT * FROM scanned_documents WHERE processingMode = :mode AND isDeleted = 0")
+    fun getByProcessingMode(mode: String): Flow<List<DocumentVaultEntity>>
+
     @Query("SELECT * FROM scanned_documents WHERE syncStatus = 'PENDING'")
     fun getUnsynced(): Flow<List<DocumentVaultEntity>>
 
+    @Query("UPDATE scanned_documents SET ocrRawText = :text, extractionStatus = :status, confidence = :confidence WHERE id = :id")
+    suspend fun updateOcrResult(id: String, text: String, status: String, confidence: Float)
+
+    @Query("UPDATE scanned_documents SET extractedFieldsCsv = :csv, extractionStatus = :status WHERE id = :id")
+    suspend fun updateExtractedCsv(id: String, csv: String, status: String)
+
     @Query("UPDATE scanned_documents SET syncStatus = :status WHERE id = :id")
+    suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("DELETE FROM scanned_documents WHERE id = :id")
+    suspend fun deleteById(id: String)
+}
+
+@Dao
+interface ScanSessionDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(session: ScanSessionEntity)
+
+    @Query("SELECT * FROM scan_sessions WHERE id = :id")
+    suspend fun getById(id: String): ScanSessionEntity?
+
+    @Query("SELECT * FROM scan_sessions WHERE isDeleted = 0 ORDER BY createdAt DESC")
+    fun getAll(): Flow<List<ScanSessionEntity>>
+
+    @Query("SELECT * FROM scan_sessions WHERE isCompleted = 0 AND isDeleted = 0 ORDER BY createdAt DESC")
+    fun getActiveSessions(): Flow<List<ScanSessionEntity>>
+
+    @Query("UPDATE scan_sessions SET totalPages = totalPages + 1 WHERE id = :id")
+    suspend fun incrementTotalPages(id: String)
+
+    @Query("UPDATE scan_sessions SET processedPages = processedPages + 1, isCompleted = :isCompleted WHERE id = :id")
+    suspend fun updateProgress(id: String, isCompleted: Boolean)
+
+    @Query("UPDATE scan_sessions SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
 }
