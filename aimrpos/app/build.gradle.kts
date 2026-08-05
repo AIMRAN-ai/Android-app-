@@ -91,6 +91,10 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // Dynamic Color / Adaptive UI
+    implementation("androidx.window:window:1.2.0")
+    implementation("androidx.compose.material3:material3-window-size-class:1.0.0")
+
     // OAuth / Social Login
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("net.openid:appauth:0.11.1")
