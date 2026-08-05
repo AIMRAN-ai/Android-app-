@@ -7,6 +7,7 @@ import com.aimr.aimrpos.data.local.dao.AuditLogDao
 import com.aimr.aimrpos.data.local.dao.BusinessDao
 import com.aimr.aimrpos.data.local.dao.CategoryDao
 import com.aimr.aimrpos.data.local.dao.CustomerDao
+import com.aimr.aimrpos.data.local.dao.DashboardWidgetDao
 import com.aimr.aimrpos.data.local.dao.DocumentVaultDao
 import com.aimr.aimrpos.data.local.dao.GRNDao
 import com.aimr.aimrpos.data.local.dao.InvoiceDao
@@ -17,6 +18,7 @@ import com.aimr.aimrpos.data.local.dao.ProductDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderItemDao
 import com.aimr.aimrpos.data.local.dao.ReturnInvoiceDao
+import com.aimr.aimrpos.data.local.dao.ScanSessionDao
 import com.aimr.aimrpos.data.local.dao.StockLedgerDao
 import com.aimr.aimrpos.data.local.dao.StockTransferDao
 import com.aimr.aimrpos.data.local.dao.SupplierDao
@@ -31,6 +33,8 @@ import com.aimr.aimrpos.data.local.entity.AnalyticsSnapshotEntity
 import com.aimr.aimrpos.data.local.entity.NotificationEntity
 import com.aimr.aimrpos.data.local.entity.ExchangeRateEntity
 import com.aimr.aimrpos.data.local.entity.BusinessUnitEntity
+import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
+import com.aimr.aimrpos.data.local.entity.DashboardWidgetEntity
 import com.aimr.aimrpos.data.local.entity.BusinessEntity
 import com.aimr.aimrpos.data.local.entity.CategoryEntity
 import com.aimr.aimrpos.data.local.entity.CustomerEntity
@@ -44,7 +48,6 @@ import com.aimr.aimrpos.data.local.entity.ProductEntity
 import com.aimr.aimrpos.data.local.entity.PurchaseOrderEntity
 import com.aimr.aimrpos.data.local.entity.PurchaseOrderItemEntity
 import com.aimr.aimrpos.data.local.entity.ReturnInvoiceEntity
-import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
 import com.aimr.aimrpos.data.local.entity.StockLedgerEntity
 import com.aimr.aimrpos.data.local.entity.StockTransferEntity
 import com.aimr.aimrpos.data.local.entity.SupplierEntity
@@ -81,9 +84,10 @@ import com.aimr.aimrpos.data.local.entity.UserEntity
         AnalyticsSnapshotEntity::class,
         NotificationEntity::class,
         ExchangeRateEntity::class,
-        BusinessUnitEntity::class
+        BusinessUnitEntity::class,
+        DashboardWidgetEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AimrPosDatabase : RoomDatabase() {
@@ -116,5 +120,8 @@ abstract class AimrPosDatabase : RoomDatabase() {
     abstract fun salesForecastDao(): SalesForecastDao
     abstract fun analyticsSnapshotDao(): AnalyticsSnapshotDao
     abstract fun notificationDao(): NotificationDao
+
     abstract fun businessUnitDao(): BusinessUnitDao
+
+    abstract fun dashboardWidgetDao(): DashboardWidgetDao
 }

@@ -97,19 +97,38 @@ data class ReturnLineItem(
 )
 
 @Stable
-data class AuditLog(
+data class BusinessUnit(
     val id: String = "",
     val businessId: String = "",
-    val userId: String = "",
-    val userName: String = "",
-    val action: String = "",
-    val entityType: String = "",
-    val entityId: String = "",
-    val oldValueJson: String? = null,
-    val newValueJson: String? = null,
-    val deviceId: String = "",
-    val ipAddress: String? = null,
-    val timestamp: Long = 0L
+    val name: String = "",
+    val nameUr: String? = null,
+    val address: String = "",
+    val phone: String = "",
+    val email: String = "",
+    val managerUserId: String = "",
+    val timezone: String = "Asia/Karachi",
+    val currencyCode: String = "PKR",
+    val taxNumber: String = "",
+    val isActive: Boolean = true,
+    val createdAt: Long = 0L,
+    val updatedAt: Long = 0L,
+    val syncStatus: String = "PENDING"
+)
+
+@Stable
+data class DashboardWidget(
+    val id: String = "",
+    val widgetType: String = "",
+    val title: String = "",
+    val positionX: Int = 0,
+    val positionY: Int = 0,
+    val width: Int = 1,
+    val height: Int = 1,
+    val configJson: String = "{}",
+    val isVisible: Boolean = true,
+    val updatedAt: Long = 0L,
+    val isDeleted: Boolean = false,
+    val syncStatus: String = "PENDING"
 )
 
 @Stable

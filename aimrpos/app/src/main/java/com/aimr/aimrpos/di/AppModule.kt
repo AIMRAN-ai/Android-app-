@@ -8,6 +8,7 @@ import com.aimr.aimrpos.data.local.dao.AuditLogDao
 import com.aimr.aimrpos.data.local.dao.BusinessDao
 import com.aimr.aimrpos.data.local.dao.CategoryDao
 import com.aimr.aimrpos.data.local.dao.CustomerDao
+import com.aimr.aimrpos.data.local.dao.DashboardWidgetDao
 import com.aimr.aimrpos.data.local.dao.DocumentVaultDao
 import com.aimr.aimrpos.data.local.dao.GRNDao
 import com.aimr.aimrpos.data.local.dao.InvoiceDao
@@ -18,9 +19,11 @@ import com.aimr.aimrpos.data.local.dao.ProductDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderItemDao
 import com.aimr.aimrpos.data.local.dao.ReturnInvoiceDao
+import com.aimr.aimrpos.data.local.dao.ScanSessionDao
 import com.aimr.aimrpos.data.local.dao.StockLedgerDao
 import com.aimr.aimrpos.data.local.dao.StockTransferDao
 import com.aimr.aimrpos.data.local.dao.SupplierDao
+import com.aimr.aimrpos.data.local.dao.UserDao
 import com.aimr.aimrpos.data.repository.ProductRepositoryImpl
 import com.aimr.aimrpos.data.repository.InvoiceRepositoryImpl
 import com.aimr.aimrpos.data.repository.InvoiceItemRepositoryImpl
@@ -28,13 +31,11 @@ import com.aimr.aimrpos.data.repository.CustomerRepositoryImpl
 import com.aimr.aimrpos.data.repository.UserRepositoryImpl
 import com.aimr.aimrpos.data.repository.BusinessRepositoryImpl
 import com.aimr.aimrpos.data.repository.CategoryRepositoryImpl
-import com.aimr.aimrpos.domain.repository.ProductRepository
-import com.aimr.aimrpos.domain.repository.InvoiceRepository
-import com.aimr.aimrpos.domain.repository.InvoiceItemRepository
-import com.aimr.aimrpos.domain.repository.CustomerRepository
-import com.aimr.aimrpos.domain.repository.UserRepository
-import com.aimr.aimrpos.domain.repository.BusinessRepository
+import com.aimr.aimrpos.data.repository.DashboardWidgetRepositoryImpl
+import com.aimr.aimrpos.data.repository.ScanSessionRepositoryImpl
 import com.aimr.aimrpos.domain.repository.CategoryRepository
+import com.aimr.aimrpos.domain.repository.DashboardWidgetRepository
+import com.aimr.aimrpos.domain.repository.ScanSessionRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -126,6 +127,9 @@ object AppModule {
     fun provideBusinessUnitDao(database: AimrPosDatabase): BusinessUnitDao = database.businessUnitDao()
 
     @Provides
+    fun provideDashboardWidgetDao(database: AimrPosDatabase): DashboardWidgetDao = database.dashboardWidgetDao()
+
+    @Provides
     @Singleton
     fun provideProductRepository(dao: ProductDao): ProductRepository = ProductRepositoryImpl(dao)
 
@@ -192,4 +196,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideBusinessUnitRepository(dao: BusinessUnitDao): BusinessUnitRepository = BusinessUnitRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideScanSessionRepository(dao: ScanSessionDao): ScanSessionRepository = ScanSessionRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideDashboardWidgetRepository(dao: DashboardWidgetDao): DashboardWidgetRepository = DashboardWidgetRepositoryImpl(dao)
 }

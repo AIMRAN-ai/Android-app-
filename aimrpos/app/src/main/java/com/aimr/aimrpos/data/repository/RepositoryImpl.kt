@@ -36,6 +36,8 @@ import com.aimr.aimrpos.data.local.entity.ReturnInvoiceEntity
 import com.aimr.aimrpos.data.local.entity.StockLedgerEntity
 import com.aimr.aimrpos.data.local.entity.StockTransferEntity
 import com.aimr.aimrpos.data.local.entity.SupplierEntity
+import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
+import com.aimr.aimrpos.data.local.entity.DashboardWidgetEntity
 import com.aimr.aimrpos.domain.model.AuditLog
 import com.aimr.aimrpos.domain.model.ApprovalRequest
 import com.aimr.aimrpos.domain.model.Business
@@ -54,6 +56,7 @@ import com.aimr.aimrpos.domain.model.StockLedgerEntry
 import com.aimr.aimrpos.domain.model.StockTransfer
 import com.aimr.aimrpos.domain.model.Supplier
 import com.aimr.aimrpos.domain.model.User
+import com.aimr.aimrpos.domain.model.DashboardWidget
 import com.aimr.aimrpos.domain.repository.AuditLogRepository
 import com.aimr.aimrpos.domain.repository.ApprovalRequestRepository
 import com.aimr.aimrpos.domain.repository.BusinessRepository
@@ -673,3 +676,81 @@ fun com.aimr.aimrpos.domain.model.BusinessUnit.toEntity(): BusinessUnitEntity = 
     currencyCode = currencyCode, taxNumber = taxNumber, isActive = isActive,
     createdAt = createdAt, updatedAt = updatedAt, syncStatus = syncStatus
 )
+
+fun ScanSessionEntity.toDomain(): com.aimr.aimrpos.domain.model.DocumentVault = com.aimr.aimrpos.domain.model.DocumentVault(
+    id = id, businessId = businessId, documentType = documentType,
+    fileName = fileName, filePath = filePath, thumbnailPath = thumbnailPath,
+    ocrRawText = ocrRawText, extractionStatus = extractionStatus,
+    linkedRecordType = null, linkedRecordId = null,
+    scannedByUserId = scannedByUserId, scannedAt = scannedAt,
+    locationId = locationId, confidence = confidence,
+    uploadedAt = scannedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun com.aimr.aimrpos.domain.model.DocumentVault.toScanSessionEntity(): ScanSessionEntity = ScanSessionEntity(
+    id = id, businessId = businessId, documentType = documentType,
+    fileName = fileName, filePath = filePath, thumbnailPath = thumbnailPath,
+    ocrRawText = ocrRawText, extractionStatus = extractionStatus,
+    scannedByUserId = scannedByUserId, scannedAt = scannedAt,
+    locationId = locationId, confidence = confidence,
+    isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun DashboardWidgetEntity.toDomain(): DashboardWidget = DashboardWidget(
+    id = id, widgetType = widgetType, title = title,
+    positionX = positionX, positionY = positionY,
+    width = width, height = height,
+    configJson = configJson, isVisible = isVisible,
+    updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun DashboardWidget.toEntity(): DashboardWidgetEntity = DashboardWidgetEntity(
+    id = id, widgetType = widgetType, title = title,
+    positionX = positionX, positionY = positionY,
+    width = width, height = height,
+    configJson = configJson, isVisible = isVisible,
+    updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+class ScanSessionRepositoryImpl(private val dao: ScanSessionDao) {
+    suspend fun upsert(session: com.aimr.aimrpos.domain.model.DocumentVault) {
+        dao.upsert(session.toScanSessionEntity())
+    }
+    suspend fun getById(id: String): com.aimr.aimrpos.domain.model.DocumentVault? {
+        return dao.getById(id)?.toDomain()
+    }
+    fun getAll() = dao.getAll().map { it.map { it.toDomain() } }
+    fun getByType(type: String) = dao.getByType(type).map { it.map { it.toDomain() } }
+    fun getByUser(userId: String) = dao.getByUser(userId).map { it.map { it.toDomain() } }
+    fun getUnsynced() = dao.getUnsynced().map { it.map { it.toDomain() } }
+    suspend fun updateOcrResult(id: String, ocrRawText: String, status: String, confidence: Float) {
+        dao.updateOcrResult(id, ocrRawText, status, confidence)
+    }
+    suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+    suspend fun deleteById(id: String) = dao.deleteById(id)
+    suspend fun deleteSoftDeleted() = dao.deleteSoftDeleted()
+}
+
+class DashboardWidgetRepositoryImpl(private val dao: DashboardWidgetDao) : DashboardWidgetRepository {
+    override suspend fun upsert(widget: DashboardWidget) {
+        dao.upsert(widget.toEntity())
+    }
+    override fun getAllVisible(): Flow<List<DashboardWidget>> =
+        dao.getAllVisible().map { it.map { it.toDomain() } }
+    override suspend fun getById(id: String): DashboardWidget? {
+        return dao.getById(id)?.toDomain()
+    }
+    override fun getByType(type: String): Flow<List<DashboardWidget>> =
+        dao.getByType(type).map { it.map { it.toDomain() } }
+    override suspend fun updateLayout(id: String, x: Int, y: Int, width: Int, height: Int) {
+        dao.updateLayout(id, x, y, width, height)
+    }
+    override suspend fun setVisibility(id: String, visible: Boolean) {
+        dao.setVisibility(id, visible)
+    }
+    override suspend fun updateConfig(id: String, config: String) {
+        dao.updateConfig(id, config)
+    }
+    override suspend fun deleteById(id: String) = dao.deleteById(id)
+    override suspend fun deleteSoftDeleted() = dao.deleteSoftDeleted()
+}

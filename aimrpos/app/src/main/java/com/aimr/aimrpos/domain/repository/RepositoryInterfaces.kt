@@ -249,3 +249,28 @@ interface BusinessUnitRepository {
     suspend fun getById(id: String): com.aimr.aimrpos.domain.model.BusinessUnit?
     suspend fun updateSyncStatus(id: String, status: String)
 }
+
+interface ScanSessionRepository {
+    suspend fun upsert(session: com.aimr.aimrpos.domain.model.DocumentVault)
+    suspend fun getById(id: String): com.aimr.aimrpos.domain.model.DocumentVault?
+    fun getAll(): Flow<List<com.aimr.aimrpos.domain.model.DocumentVault>>
+    fun getByType(type: String): Flow<List<com.aimr.aimrpos.domain.model.DocumentVault>>
+    fun getByUser(userId: String): Flow<List<com.aimr.aimrpos.domain.model.DocumentVault>>
+    fun getUnsynced(): Flow<List<com.aimr.aimrpos.domain.model.DocumentVault>>
+    suspend fun updateOcrResult(id: String, ocrRawText: String, status: String, confidence: Float)
+    suspend fun updateSyncStatus(id: String, status: String)
+    suspend fun deleteById(id: String)
+    suspend fun deleteSoftDeleted()
+}
+
+interface DashboardWidgetRepository {
+    suspend fun upsert(widget: DashboardWidget)
+    fun getAllVisible(): Flow<List<DashboardWidget>>
+    suspend fun getById(id: String): DashboardWidget?
+    fun getByType(type: String): Flow<List<DashboardWidget>>
+    suspend fun updateLayout(id: String, x: Int, y: Int, width: Int, height: Int)
+    suspend fun setVisibility(id: String, visible: Boolean)
+    suspend fun updateConfig(id: String, config: String)
+    suspend fun deleteById(id: String)
+    suspend fun deleteSoftDeleted()
+}
