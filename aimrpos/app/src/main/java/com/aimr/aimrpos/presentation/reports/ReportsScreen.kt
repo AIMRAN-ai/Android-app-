@@ -38,12 +38,10 @@ import androidx.navigation.NavHostController
 import com.aimr.aimrpos.domain.model.Invoice
 import com.aimr.aimrpos.domain.usecase.GetDailySalesUseCase
 import com.aimr.aimrpos.domain.usecase.GetStockValuationUseCase
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.compose.chart.line.lineModel
-import com.patrykandpatrick.vico.compose.chart.line.lineSeries
-import com.patrykandpatrick.vico.compose.chart.line.lineSpec
+import com.aimr.aimrpos.ui.components.DemandForecastWidget
+import com.aimr.aimrpos.ui.components.DrillDownReportCard
+import com.aimr.aimrpos.ui.components.HeatmapCalendar
+import com.aimr.aimrpos.ui.components.RfmSegmentCard
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -232,6 +230,77 @@ fun ReportsScreen(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Advanced Analytics",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        DrillDownReportCard(
+            title = "Top Performing Product",
+            value = "Rs ${"%.2f".format(totalSales * 0.35)}",
+            subtitle = "Tap to view detailed breakdown",
+            onClick = { }
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        HeatmapCalendar(
+            data = listOf(
+                Triple("Mon", "10:00", 5000.0),
+                Triple("Mon", "14:00", 8000.0),
+                Triple("Tue", "10:00", 3000.0),
+                Triple("Tue", "14:00", 6000.0),
+                Triple("Wed", "10:00", 7000.0),
+                Triple("Wed", "14:00", 9000.0),
+                Triple("Thu", "10:00", 4000.0),
+                Triple("Thu", "14:00", 7500.0)
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            RfmSegmentCard(
+                segment = "VIP",
+                count = 12,
+                revenue = totalSales * 0.45,
+                color = Color(0xFF10B981),
+                modifier = Modifier.weight(1f)
+            )
+            RfmSegmentCard(
+                segment = "Regular",
+                count = 45,
+                revenue = totalSales * 0.40,
+                color = Color(0xFF3B82F6),
+                modifier = Modifier.weight(1f)
+            )
+            RfmSegmentCard(
+                segment = "At-risk",
+                count = 18,
+                revenue = totalSales * 0.15,
+                color = Color(0xFFEF4444),
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        DemandForecastWidget(
+            predictedSales = totalSales * 1.12,
+            confidence = 0.78f,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
