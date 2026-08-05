@@ -50,6 +50,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aimr.aimrpos.data.scanning.OcrOutputFormat
 import com.aimr.aimrpos.data.scanning.ScanMode
 import com.aimr.aimrpos.data.scanning.ScannedPage
+import com.aimr.aimrpos.ui.components.BatchScanningGrid
+import com.aimr.aimrpos.ui.components.CornerBrackets
+import com.aimr.aimrpos.ui.components.ScanLaserAnimation
 
 @Composable
 fun ScanHubScreen(navController: NavHostController) {
@@ -101,6 +104,13 @@ fun ScanHubScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        Box(modifier = Modifier.fillMaxWidth()) {
+            CornerBrackets(modifier = Modifier.fillMaxWidth())
+            ScanLaserAnimation(modifier = Modifier.fillMaxWidth())
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         if (currentSession == null) {
             CreateSessionCard(
                 sessionName = sessionName,
@@ -142,9 +152,29 @@ fun ScanHubScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(scannedPages, key = { it.id }) { page ->
-                ScannedPageCard(page = page)
+        if (scannedPages.size > 1) {
+            BatchScanningGrid(
+                documents = scannedPages.map { page ->
+                    com.aimr.aimrpos.domain.model.DocumentVault(
+                        id = page.id,
+                        fileName = page.fileName,
+                        documentType = page.documentType,
+                        extractionStatus = page.extractionStatus,
+                        scannedAt = page.scannedAt
+                    )
+                },
+                onDocumentClick = { doc ->
+                    val page = scannedPages.find { it.id == doc.id }
+                    page?.let {
+                        navController.navigate("document_review/${it.id}")
+                    }
+                }
+            )
+        } else {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(scannedPages, key = { it.id }) { page ->
+                    ScannedPageCard(page = page)
+                }
             }
         }
     }

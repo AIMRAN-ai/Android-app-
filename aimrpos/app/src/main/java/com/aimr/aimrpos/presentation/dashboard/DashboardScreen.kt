@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aimr.aimrpos.domain.model.DashboardWidget
+import com.aimr.aimrpos.ui.components.DemandForecastWidget
+import com.aimr.aimrpos.ui.components.RecommendationCarousel
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -131,6 +133,21 @@ fun DashboardScreen(
                             iconBg = Color(0xFFF59E0B),
                             modifier = Modifier.fillMaxWidth()
                         )
+                        "FORECAST_WIDGET" -> DemandForecastWidget(
+                            predictedSales = state.todaySales * 1.15,
+                            confidence = 0.82f,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        "RECOMMENDATIONS" -> RecommendationCarousel(
+                            recommendations = listOf(
+                                "Restock Milk" to "High demand expected",
+                                "Promote Bread" to "Slow mover this week",
+                                "Bundle Eggs" to "Frequently bought together"
+                            ),
+                            onRecommendationClick = { title ->
+                                navController.navigate("inventory")
+                            }
+                        )
                         "QUICK_ACTIONS" -> QuickActionsSection(navController)
                         else -> Box(modifier = Modifier.fillMaxWidth())
                     }
@@ -192,6 +209,16 @@ fun DefaultDashboardContent(navController: NavHostController, state: DashboardSt
                     modifier = Modifier.weight(1f)
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+        item {
+            DemandForecastWidget(
+                predictedSales = state.todaySales * 1.15,
+                confidence = 0.82f,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
         item {
             Spacer(modifier = Modifier.height(24.dp))
