@@ -38,6 +38,13 @@ import com.aimr.aimrpos.data.local.entity.StockTransferEntity
 import com.aimr.aimrpos.data.local.entity.SupplierEntity
 import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
 import com.aimr.aimrpos.data.local.entity.DashboardWidgetEntity
+import com.aimr.aimrpos.data.local.entity.LoyaltyCustomerEntity
+import com.aimr.aimrpos.data.local.entity.LoyaltyTransactionEntity
+import com.aimr.aimrpos.data.local.entity.LoyaltyRuleEntity
+import com.aimr.aimrpos.data.local.entity.PriceTierEntity
+import com.aimr.aimrpos.data.local.entity.PromotionEntity
+import com.aimr.aimrpos.data.local.entity.ScaleItemEntity
+import com.aimr.aimrpos.data.local.entity.ProductBatchEntity
 import com.aimr.aimrpos.domain.model.AuditLog
 import com.aimr.aimrpos.domain.model.ApprovalRequest
 import com.aimr.aimrpos.domain.model.Business
@@ -57,6 +64,13 @@ import com.aimr.aimrpos.domain.model.StockTransfer
 import com.aimr.aimrpos.domain.model.Supplier
 import com.aimr.aimrpos.domain.model.User
 import com.aimr.aimrpos.domain.model.DashboardWidget
+import com.aimr.aimrpos.domain.model.LoyaltyCustomer
+import com.aimr.aimrpos.domain.model.LoyaltyRule
+import com.aimr.aimrpos.domain.model.LoyaltyTransaction
+import com.aimr.aimrpos.domain.model.PriceTier
+import com.aimr.aimrpos.domain.model.Promotion
+import com.aimr.aimrpos.domain.model.ScaleItem
+import com.aimr.aimrpos.domain.model.ProductBatch
 import com.aimr.aimrpos.domain.repository.AuditLogRepository
 import com.aimr.aimrpos.domain.repository.ApprovalRequestRepository
 import com.aimr.aimrpos.domain.repository.BusinessRepository

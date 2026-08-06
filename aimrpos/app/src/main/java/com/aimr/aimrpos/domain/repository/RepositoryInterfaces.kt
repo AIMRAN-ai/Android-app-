@@ -274,3 +274,32 @@ interface DashboardWidgetRepository {
     suspend fun deleteById(id: String)
     suspend fun deleteSoftDeleted()
 }
+
+interface LoyaltyCustomerRepository {
+    suspend fun upsert(customer: LoyaltyCustomer)
+    suspend fun getById(id: String): LoyaltyCustomer?
+    suspend fun getByCustomerId(customerId: String): LoyaltyCustomer?
+    fun getAll(): Flow<List<LoyaltyCustomer>>
+    fun getByTier(tier: String): Flow<List<LoyaltyCustomer>>
+    suspend fun addPoints(customerId: String, points: Int)
+    suspend fun redeemPoints(customerId: String, points: Int)
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface LoyaltyTransactionRepository {
+    suspend fun insert(transaction: LoyaltyTransaction)
+    suspend fun getById(id: String): LoyaltyTransaction?
+    fun getByLoyaltyCustomer(loyaltyCustomerId: String): Flow<List<LoyaltyTransaction>>
+    fun getByCustomer(customerId: String): Flow<List<LoyaltyTransaction>>
+    fun getByType(type: String): Flow<List<LoyaltyTransaction>>
+    fun getBetween(from: Long, to: Long): Flow<List<LoyaltyTransaction>>
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface LoyaltyRuleRepository {
+    suspend fun upsert(rule: LoyaltyRule)
+    suspend fun getById(id: String): LoyaltyRule?
+    fun getAllActive(): Flow<List<LoyaltyRule>>
+    fun getAll(): Flow<List<LoyaltyRule>>
+    suspend fun updateSyncStatus(id: String, status: String)
+}

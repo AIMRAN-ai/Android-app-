@@ -153,16 +153,59 @@ data class DocumentVault(
 )
 
 @Stable
-data class Location(
+data class ProductBatch(
     val id: String = "",
-    val businessId: String = "",
+    val productId: String = "",
+    val batchNumber: String = "",
+    val quantity: Double = 0.0,
+    val manufacturingDate: Long? = null,
+    val expiryDate: Long? = null,
+    val supplierId: String? = null,
+    val locationId: String? = null,
+    val notes: String? = null,
+    val updatedAt: Long = 0L,
+    val isDeleted: Boolean = false,
+    val syncStatus: String = "PENDING"
+)
+
+@Stable
+data class LoyaltyCustomer(
+    val id: String = "",
+    val customerId: String = "",
+    val pointsBalance: Int = 0,
+    val totalEarned: Int = 0,
+    val totalRedeemed: Int = 0,
+    val tier: String = "BRONZE",
+    val joinedAt: Long = 0L,
+    val updatedAt: Long = 0L,
+    val isDeleted: Boolean = false,
+    val syncStatus: String = "PENDING"
+)
+
+@Stable
+data class LoyaltyTransaction(
+    val id: String = "",
+    val loyaltyCustomerId: String = "",
+    val customerId: String = "",
+    val points: Int = 0,
+    val type: String = "EARN",
+    val referenceType: String? = null,
+    val referenceId: String? = null,
+    val description: String? = null,
+    val createdAt: Long = 0L,
+    val syncStatus: String = "PENDING"
+)
+
+@Stable
+data class LoyaltyRule(
+    val id: String = "",
     val name: String = "",
-    val address: String? = null,
-    val phone: String? = null,
-    val managerUserId: String? = null,
-    val locationLatitude: Double? = null,
-    val locationLongitude: Double? = null,
-    val isWarehouse: Boolean = true,
+    val pointsPerAmount: Double = 1.0,
+    val minPurchaseAmount: Double = 0.0,
+    val pointsExpiryDays: Int? = null,
+    val applicableCustomerType: String? = null,
+    val isActive: Boolean = true,
+    val createdAt: Long = 0L,
     val updatedAt: Long = 0L,
     val isDeleted: Boolean = false,
     val syncStatus: String = "PENDING"
