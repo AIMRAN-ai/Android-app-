@@ -52,27 +52,3 @@ interface DocumentVaultDao {
     @Query("DELETE FROM scanned_documents WHERE id = :id")
     suspend fun deleteById(id: String)
 }
-
-@Dao
-interface ScanSessionDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsert(session: ScanSessionEntity)
-
-    @Query("SELECT * FROM scan_sessions WHERE id = :id")
-    suspend fun getById(id: String): ScanSessionEntity?
-
-    @Query("SELECT * FROM scan_sessions WHERE isDeleted = 0 ORDER BY createdAt DESC")
-    fun getAll(): Flow<List<ScanSessionEntity>>
-
-    @Query("SELECT * FROM scan_sessions WHERE isCompleted = 0 AND isDeleted = 0 ORDER BY createdAt DESC")
-    fun getActiveSessions(): Flow<List<ScanSessionEntity>>
-
-    @Query("UPDATE scan_sessions SET totalPages = totalPages + 1 WHERE id = :id")
-    suspend fun incrementTotalPages(id: String)
-
-    @Query("UPDATE scan_sessions SET processedPages = processedPages + 1, isCompleted = :isCompleted WHERE id = :id")
-    suspend fun updateProgress(id: String, isCompleted: Boolean)
-
-    @Query("UPDATE scan_sessions SET syncStatus = :status WHERE id = :id")
-    suspend fun updateSyncStatus(id: String, status: String)
-}

@@ -5,19 +5,30 @@ import com.aimr.aimrpos.data.local.dao.AuditLogDao
 import com.aimr.aimrpos.data.local.dao.BusinessDao
 import com.aimr.aimrpos.data.local.dao.CategoryDao
 import com.aimr.aimrpos.data.local.dao.CustomerDao
+import com.aimr.aimrpos.data.local.dao.DashboardWidgetDao
 import com.aimr.aimrpos.data.local.dao.DocumentVaultDao
 import com.aimr.aimrpos.data.local.dao.GRNDao
 import com.aimr.aimrpos.data.local.dao.InvoiceDao
 import com.aimr.aimrpos.data.local.dao.InvoiceItemDao
 import com.aimr.aimrpos.data.local.dao.LocationDao
 import com.aimr.aimrpos.data.local.dao.PaymentDao
+import com.aimr.aimrpos.data.local.dao.PriceHistoryDao
+import com.aimr.aimrpos.data.local.dao.PriceTierDao
+import com.aimr.aimrpos.data.local.dao.ProductBatchDao
 import com.aimr.aimrpos.data.local.dao.ProductDao
+import com.aimr.aimrpos.data.local.dao.PromotionDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderItemDao
 import com.aimr.aimrpos.data.local.dao.ReturnInvoiceDao
+import com.aimr.aimrpos.data.local.dao.ScaleItemDao
+import com.aimr.aimrpos.data.local.dao.ScanSessionDao
 import com.aimr.aimrpos.data.local.dao.StockLedgerDao
 import com.aimr.aimrpos.data.local.dao.StockTransferDao
 import com.aimr.aimrpos.data.local.dao.SupplierDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyCustomerDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyRuleDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyTransactionDao
+import com.aimr.aimrpos.data.local.dao.UserDao
 import com.aimr.aimrpos.data.local.entity.AuditLogEntity
 import com.aimr.aimrpos.data.local.entity.ApprovalRequestEntity
 import com.aimr.aimrpos.data.local.entity.BusinessEntity
@@ -67,6 +78,7 @@ import com.aimr.aimrpos.domain.model.DashboardWidget
 import com.aimr.aimrpos.domain.model.LoyaltyCustomer
 import com.aimr.aimrpos.domain.model.LoyaltyRule
 import com.aimr.aimrpos.domain.model.LoyaltyTransaction
+import com.aimr.aimrpos.domain.model.PriceHistory
 import com.aimr.aimrpos.domain.model.PriceTier
 import com.aimr.aimrpos.domain.model.Promotion
 import com.aimr.aimrpos.domain.model.ScaleItem
@@ -76,19 +88,29 @@ import com.aimr.aimrpos.domain.repository.ApprovalRequestRepository
 import com.aimr.aimrpos.domain.repository.BusinessRepository
 import com.aimr.aimrpos.domain.repository.CategoryRepository
 import com.aimr.aimrpos.domain.repository.CustomerRepository
+import com.aimr.aimrpos.domain.repository.DashboardWidgetRepository
 import com.aimr.aimrpos.domain.repository.DocumentVaultRepository
 import com.aimr.aimrpos.domain.repository.GRNRepository
 import com.aimr.aimrpos.domain.repository.InvoiceItemRepository
 import com.aimr.aimrpos.domain.repository.InvoiceRepository
 import com.aimr.aimrpos.domain.repository.LocationRepository
 import com.aimr.aimrpos.domain.repository.PaymentRepository
+import com.aimr.aimrpos.domain.repository.PriceHistoryRepository
+import com.aimr.aimrpos.domain.repository.PriceTierRepository
+import com.aimr.aimrpos.domain.repository.ProductBatchRepository
 import com.aimr.aimrpos.domain.repository.ProductRepository
+import com.aimr.aimrpos.domain.repository.PromotionRepository
 import com.aimr.aimrpos.domain.repository.PurchaseOrderRepository
 import com.aimr.aimrpos.domain.repository.ReturnInvoiceRepository
+import com.aimr.aimrpos.domain.repository.ScaleItemRepository
+import com.aimr.aimrpos.domain.repository.ScanSessionRepository
 import com.aimr.aimrpos.domain.repository.StockLedgerRepository
 import com.aimr.aimrpos.domain.repository.StockTransferRepository
 import com.aimr.aimrpos.domain.repository.SupplierRepository
 import com.aimr.aimrpos.domain.repository.UserRepository
+import com.aimr.aimrpos.domain.repository.LoyaltyCustomerRepository
+import com.aimr.aimrpos.domain.repository.LoyaltyRuleRepository
+import com.aimr.aimrpos.domain.repository.LoyaltyTransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -726,23 +748,23 @@ fun DashboardWidget.toEntity(): DashboardWidgetEntity = DashboardWidgetEntity(
     updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
 )
 
-class ScanSessionRepositoryImpl(private val dao: ScanSessionDao) {
-    suspend fun upsert(session: com.aimr.aimrpos.domain.model.DocumentVault) {
+class ScanSessionRepositoryImpl(private val dao: ScanSessionDao) : ScanSessionRepository {
+    override suspend fun upsert(session: com.aimr.aimrpos.domain.model.DocumentVault) {
         dao.upsert(session.toScanSessionEntity())
     }
-    suspend fun getById(id: String): com.aimr.aimrpos.domain.model.DocumentVault? {
+    override suspend fun getById(id: String): com.aimr.aimrpos.domain.model.DocumentVault? {
         return dao.getById(id)?.toDomain()
     }
-    fun getAll() = dao.getAll().map { it.map { it.toDomain() } }
-    fun getByType(type: String) = dao.getByType(type).map { it.map { it.toDomain() } }
-    fun getByUser(userId: String) = dao.getByUser(userId).map { it.map { it.toDomain() } }
-    fun getUnsynced() = dao.getUnsynced().map { it.map { it.toDomain() } }
-    suspend fun updateOcrResult(id: String, ocrRawText: String, status: String, confidence: Float) {
+    override fun getAll() = dao.getAll().map { it.map { it.toDomain() } }
+    override fun getByType(type: String) = dao.getByType(type).map { it.map { it.toDomain() } }
+    override fun getByUser(userId: String) = dao.getByUser(userId).map { it.map { it.toDomain() } }
+    override fun getUnsynced() = dao.getUnsynced().map { it.map { it.toDomain() } }
+    override suspend fun updateOcrResult(id: String, ocrRawText: String, status: String, confidence: Float) {
         dao.updateOcrResult(id, ocrRawText, status, confidence)
     }
-    suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
-    suspend fun deleteById(id: String) = dao.deleteById(id)
-    suspend fun deleteSoftDeleted() = dao.deleteSoftDeleted()
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+    override suspend fun deleteById(id: String) = dao.deleteById(id)
+    override suspend fun deleteSoftDeleted() = dao.deleteSoftDeleted()
 }
 
 class DashboardWidgetRepositoryImpl(private val dao: DashboardWidgetDao) : DashboardWidgetRepository {
@@ -767,4 +789,197 @@ class DashboardWidgetRepositoryImpl(private val dao: DashboardWidgetDao) : Dashb
     }
     override suspend fun deleteById(id: String) = dao.deleteById(id)
     override suspend fun deleteSoftDeleted() = dao.deleteSoftDeleted()
+}
+
+fun PriceTierEntity.toDomain(): PriceTier = PriceTier(
+    id = id, productId = productId, minQty = minQty, price = price,
+    customerType = customerType, effectiveFrom = effectiveFrom, effectiveTo = effectiveTo,
+    isActive = isActive, updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun PriceTier.toEntity(): PriceTierEntity = PriceTierEntity(
+    id = id, productId = productId, minQty = minQty, price = price,
+    customerType = customerType, effectiveFrom = effectiveFrom, effectiveTo = effectiveTo,
+    isActive = isActive, updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+class PriceTierRepositoryImpl(private val dao: PriceTierDao) : PriceTierRepository {
+    override suspend fun upsert(tier: PriceTier) { dao.upsert(tier.toEntity()) }
+    override suspend fun getById(id: String): PriceTier? { return dao.getById(id)?.toDomain() }
+    override fun getByProduct(productId: String): Flow<List<PriceTier>> = dao.getByProduct(productId).map { it.map { it.toDomain() } }
+    override suspend fun getByProductAndQty(productId: String, qty: Double, customerType: String): PriceTier? { return dao.getByProductAndQty(productId, qty, customerType)?.toDomain() }
+    override fun getAllActive(): Flow<List<PriceTier>> = dao.getAllActive().map { it.map { it.toDomain() } }
+    override suspend fun deleteById(id: String) = dao.deleteById(id)
+    override suspend fun deleteForProduct(productId: String) = dao.deleteForProduct(productId)
+    override suspend fun deleteSoftDeleted() = dao.deleteSoftDeleted()
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+fun PriceHistoryEntity.toDomain(): PriceHistory = PriceHistory(
+    id = id, productId = productId, oldPrice = oldPrice, newPrice = newPrice,
+    changedBy = changedBy, changedAt = changedAt, reason = reason, syncStatus = syncStatus
+)
+
+fun PriceHistory.toEntity(): PriceHistoryEntity = PriceHistoryEntity(
+    id = id, productId = productId, oldPrice = oldPrice, newPrice = newPrice,
+    changedBy = changedBy, changedAt = changedAt, reason = reason, syncStatus = syncStatus
+)
+
+class PriceHistoryRepositoryImpl(private val dao: PriceHistoryDao) : PriceHistoryRepository {
+    override suspend fun insert(history: PriceHistory) { dao.insert(history.toEntity()) }
+    override fun getByProduct(productId: String): Flow<List<PriceHistory>> = dao.getByProduct(productId).map { it.map { it.toDomain() } }
+    override fun getByUser(userId: String): Flow<List<PriceHistory>> = dao.getByUser(userId).map { it.map { it.toDomain() } }
+    override fun getBetween(from: Long, to: Long): Flow<List<PriceHistory>> = dao.getBetween(from, to).map { it.map { it.toDomain() } }
+    override suspend fun getById(id: String): PriceHistory? { return dao.getById(id)?.toDomain() }
+    override fun getRecent(limit: Int): Flow<List<PriceHistory>> = dao.getRecent(limit).map { it.map { it.toDomain() } }
+    override suspend fun deleteForProduct(productId: String) = dao.deleteForProduct(productId)
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+fun PromotionEntity.toDomain(): Promotion = Promotion(
+    id = id, name = name, description = description, type = type, value = value,
+    minPurchaseAmount = minPurchaseAmount, maxDiscountAmount = maxDiscountAmount,
+    applicableProductIds = applicableProductIds?.split(",") ?: emptyList(),
+    applicableCategoryIds = applicableCategoryIds?.split(",") ?: emptyList(),
+    customerType = customerType, startDate = startDate, endDate = endDate,
+    isActive = isActive, usageLimit = usageLimit, usageCount = usageCount,
+    createdBy = createdBy, updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun Promotion.toEntity(): PromotionEntity = PromotionEntity(
+    id = id, name = name, description = description, type = type, value = value,
+    minPurchaseAmount = minPurchaseAmount, maxDiscountAmount = maxDiscountAmount,
+    applicableProductIds = applicableProductIds.joinToString(","),
+    applicableCategoryIds = applicableCategoryIds.joinToString(","),
+    customerType = customerType, startDate = startDate, endDate = endDate,
+    isActive = isActive, usageLimit = usageLimit, usageCount = usageCount,
+    createdBy = createdBy, updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+class PromotionRepositoryImpl(private val dao: PromotionDao) : PromotionRepository {
+    override suspend fun upsert(promotion: Promotion) { dao.upsert(promotion.toEntity()) }
+    override suspend fun getById(id: String): Promotion? { return dao.getById(id)?.toDomain() }
+    override fun getAllActive(): Flow<List<Promotion>> = dao.getAllActive().map { it.map { it.toDomain() } }
+    override fun getCurrentlyActive(now: Long): Flow<List<Promotion>> = dao.getCurrentlyActive(now).map { it.map { it.toDomain() } }
+    override fun getByUser(userId: String): Flow<List<Promotion>> = dao.getByUser(userId).map { it.map { it.toDomain() } }
+    override suspend fun deleteById(id: String) = dao.deleteById(id)
+    override suspend fun incrementUsage(id: String) = dao.incrementUsage(id)
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+fun ScaleItemEntity.toDomain(): ScaleItem = ScaleItem(
+    id = id, productId = productId, unit = unit, conversionFactor = conversionFactor,
+    isActive = isActive, updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun ScaleItem.toEntity(): ScaleItemEntity = ScaleItemEntity(
+    id = id, productId = productId, unit = unit, conversionFactor = conversionFactor,
+    isActive = isActive, updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+class ScaleItemRepositoryImpl(private val dao: ScaleItemDao) : ScaleItemRepository {
+    override suspend fun upsert(scaleItem: ScaleItem) { dao.upsert(scaleItem.toEntity()) }
+    override suspend fun getById(id: String): ScaleItem? { return dao.getById(id)?.toDomain() }
+    override suspend fun getByProduct(productId: String): ScaleItem? { return dao.getByProduct(productId)?.toDomain() }
+    override fun getAllActive(): Flow<List<ScaleItem>> = dao.getAllActive().map { it.map { it.toDomain() } }
+    override suspend fun deleteById(id: String) = dao.deleteById(id)
+    override suspend fun deleteForProduct(productId: String) = dao.deleteForProduct(productId)
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+fun ProductBatchEntity.toDomain(): ProductBatch = ProductBatch(
+    id = id, productId = productId, batchNumber = batchNumber, quantity = quantity,
+    manufacturingDate = manufacturingDate, expiryDate = expiryDate,
+    supplierId = supplierId, locationId = locationId, notes = notes,
+    updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun ProductBatch.toEntity(): ProductBatchEntity = ProductBatchEntity(
+    id = id, productId = productId, batchNumber = batchNumber, quantity = quantity,
+    manufacturingDate = manufacturingDate, expiryDate = expiryDate,
+    supplierId = supplierId, locationId = locationId, notes = notes,
+    updatedAt = updatedAt, isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+class ProductBatchRepositoryImpl(private val dao: ProductBatchDao) : ProductBatchRepository {
+    override suspend fun upsert(batch: ProductBatch) { dao.upsert(batch.toEntity()) }
+    override suspend fun getById(id: String): ProductBatch? { return dao.getById(id)?.toDomain() }
+    override fun getByProduct(productId: String): Flow<List<ProductBatch>> = dao.getByProduct(productId).map { it.map { it.toDomain() } }
+    override fun getExpiringBefore(productId: String, before: Long): Flow<List<ProductBatch>> = dao.getExpiringBefore(productId, before).map { it.map { it.toDomain() } }
+    override fun getAllExpiringBefore(before: Long): Flow<List<ProductBatch>> = dao.getAllExpiringBefore(before).map { it.map { it.toDomain() } }
+    override fun getAll(): Flow<List<ProductBatch>> = dao.getAll().map { it.map { it.toDomain() } }
+    override suspend fun deleteById(id: String) = dao.deleteById(id)
+    override suspend fun deleteForProduct(productId: String) = dao.deleteForProduct(productId)
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+fun LoyaltyCustomerEntity.toDomain(): LoyaltyCustomer = LoyaltyCustomer(
+    id = id, customerId = customerId, pointsBalance = pointsBalance,
+    totalEarned = totalEarned, totalRedeemed = totalRedeemed,
+    tier = tier, joinedAt = joinedAt, updatedAt = updatedAt,
+    isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun LoyaltyCustomer.toEntity(): LoyaltyCustomerEntity = LoyaltyCustomerEntity(
+    id = id, customerId = customerId, pointsBalance = pointsBalance,
+    totalEarned = totalEarned, totalRedeemed = totalRedeemed,
+    tier = tier, joinedAt = joinedAt, updatedAt = updatedAt,
+    isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+class LoyaltyCustomerRepositoryImpl(private val dao: LoyaltyCustomerDao) : LoyaltyCustomerRepository {
+    override suspend fun upsert(customer: LoyaltyCustomer) { dao.upsert(customer.toEntity()) }
+    override suspend fun getById(id: String): LoyaltyCustomer? { return dao.getById(id)?.toDomain() }
+    override suspend fun getByCustomerId(customerId: String): LoyaltyCustomer? { return dao.getByCustomerId(customerId)?.toDomain() }
+    override fun getAll(): Flow<List<LoyaltyCustomer>> = dao.getAll().map { it.map { it.toDomain() } }
+    override fun getByTier(tier: String): Flow<List<LoyaltyCustomer>> = dao.getByTier(tier).map { it.map { it.toDomain() } }
+    override suspend fun addPoints(customerId: String, points: Int) { dao.addPoints(customerId, points) }
+    override suspend fun redeemPoints(customerId: String, points: Int) { dao.redeemPoints(customerId, points) }
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+fun LoyaltyTransactionEntity.toDomain(): LoyaltyTransaction = LoyaltyTransaction(
+    id = id, loyaltyCustomerId = loyaltyCustomerId, customerId = customerId,
+    points = points, type = type, referenceType = referenceType,
+    referenceId = referenceId, description = description,
+    createdAt = createdAt, syncStatus = syncStatus
+)
+
+fun LoyaltyTransaction.toEntity(): LoyaltyTransactionEntity = LoyaltyTransactionEntity(
+    id = id, loyaltyCustomerId = loyaltyCustomerId, customerId = customerId,
+    points = points, type = type, referenceType = referenceType,
+    referenceId = referenceId, description = description,
+    createdAt = createdAt, syncStatus = syncStatus
+)
+
+class LoyaltyTransactionRepositoryImpl(private val dao: LoyaltyTransactionDao) : LoyaltyTransactionRepository {
+    override suspend fun insert(transaction: LoyaltyTransaction) { dao.insert(transaction.toEntity()) }
+    override suspend fun getById(id: String): LoyaltyTransaction? { return dao.getById(id)?.toDomain() }
+    override fun getByLoyaltyCustomer(loyaltyCustomerId: String): Flow<List<LoyaltyTransaction>> = dao.getByLoyaltyCustomer(loyaltyCustomerId).map { it.map { it.toDomain() } }
+    override fun getByCustomer(customerId: String): Flow<List<LoyaltyTransaction>> = dao.getByCustomer(customerId).map { it.map { it.toDomain() } }
+    override fun getByType(type: String): Flow<List<LoyaltyTransaction>> = dao.getByType(type).map { it.map { it.toDomain() } }
+    override fun getBetween(from: Long, to: Long): Flow<List<LoyaltyTransaction>> = dao.getBetween(from, to).map { it.map { it.toDomain() } }
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
+}
+
+fun LoyaltyRuleEntity.toDomain(): LoyaltyRule = LoyaltyRule(
+    id = id, name = name, pointsPerAmount = pointsPerAmount, minPurchaseAmount = minPurchaseAmount,
+    pointsExpiryDays = pointsExpiryDays, applicableCustomerType = applicableCustomerType,
+    isActive = isActive, createdAt = createdAt, updatedAt = updatedAt,
+    isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+fun LoyaltyRule.toEntity(): LoyaltyRuleEntity = LoyaltyRuleEntity(
+    id = id, name = name, pointsPerAmount = pointsPerAmount, minPurchaseAmount = minPurchaseAmount,
+    pointsExpiryDays = pointsExpiryDays, applicableCustomerType = applicableCustomerType,
+    isActive = isActive, createdAt = createdAt, updatedAt = updatedAt,
+    isDeleted = isDeleted, syncStatus = syncStatus
+)
+
+class LoyaltyRuleRepositoryImpl(private val dao: LoyaltyRuleDao) : LoyaltyRuleRepository {
+    override suspend fun upsert(rule: LoyaltyRule) { dao.upsert(rule.toEntity()) }
+    override suspend fun getById(id: String): LoyaltyRule? { return dao.getById(id)?.toDomain() }
+    override fun getAllActive(): Flow<List<LoyaltyRule>> = dao.getAllActive().map { it.map { it.toDomain() } }
+    override fun getAll(): Flow<List<LoyaltyRule>> = dao.getAll().map { it.map { it.toDomain() } }
+    override suspend fun updateSyncStatus(id: String, status: String) = dao.updateSyncStatus(id, status)
 }

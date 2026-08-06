@@ -24,4 +24,10 @@ sealed class Screen(val route: String) {
     object QrScanner : Screen("qr_scanner")
     object ScanHub : Screen("scan_hub")
     object SupplierLedger : Screen("supplier_ledger")
+    object PriceTiers : Screen("price_tiers/{productId}")
+    object PriceHistory : Screen("price_history/{productId}")
+    object Promotions : Screen("promotions")
+    object ScaleItems : Screen("scale_items")
+    object ProductBatches : Screen("product_batches/{productId}")
+    object Loyalty : Screen("loyalty")
 }

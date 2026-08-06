@@ -15,15 +15,22 @@ import com.aimr.aimrpos.data.local.dao.InvoiceDao
 import com.aimr.aimrpos.data.local.dao.InvoiceItemDao
 import com.aimr.aimrpos.data.local.dao.LocationDao
 import com.aimr.aimrpos.data.local.dao.PaymentDao
+import com.aimr.aimrpos.data.local.dao.PriceHistoryDao
+import com.aimr.aimrpos.data.local.dao.PriceTierDao
+import com.aimr.aimrpos.data.local.dao.ProductBatchDao
 import com.aimr.aimrpos.data.local.dao.ProductDao
+import com.aimr.aimrpos.data.local.dao.PromotionDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderItemDao
 import com.aimr.aimrpos.data.local.dao.ReturnInvoiceDao
-import com.aimr.aimrpos.data.local.dao.ScanSessionDao
+import com.aimr.aimrpos.data.local.dao.ScaleItemDao
 import com.aimr.aimrpos.data.local.dao.StockLedgerDao
 import com.aimr.aimrpos.data.local.dao.StockTransferDao
 import com.aimr.aimrpos.data.local.dao.SupplierDao
 import com.aimr.aimrpos.data.local.dao.UserDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyCustomerDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyRuleDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyTransactionDao
 import com.aimr.aimrpos.data.repository.ProductRepositoryImpl
 import com.aimr.aimrpos.data.repository.InvoiceRepositoryImpl
 import com.aimr.aimrpos.data.repository.InvoiceItemRepositoryImpl
@@ -32,10 +39,26 @@ import com.aimr.aimrpos.data.repository.UserRepositoryImpl
 import com.aimr.aimrpos.data.repository.BusinessRepositoryImpl
 import com.aimr.aimrpos.data.repository.CategoryRepositoryImpl
 import com.aimr.aimrpos.data.repository.DashboardWidgetRepositoryImpl
+import com.aimr.aimrpos.data.repository.PriceHistoryRepositoryImpl
+import com.aimr.aimrpos.data.repository.PriceTierRepositoryImpl
+import com.aimr.aimrpos.data.repository.PromotionRepositoryImpl
+import com.aimr.aimrpos.data.repository.ScaleItemRepositoryImpl
+import com.aimr.aimrpos.data.repository.ProductBatchRepositoryImpl
+import com.aimr.aimrpos.data.repository.LoyaltyCustomerRepositoryImpl
+import com.aimr.aimrpos.data.repository.LoyaltyTransactionRepositoryImpl
+import com.aimr.aimrpos.data.repository.LoyaltyRuleRepositoryImpl
 import com.aimr.aimrpos.data.repository.ScanSessionRepositoryImpl
 import com.aimr.aimrpos.domain.repository.CategoryRepository
 import com.aimr.aimrpos.domain.repository.DashboardWidgetRepository
 import com.aimr.aimrpos.domain.repository.ScanSessionRepository
+import com.aimr.aimrpos.domain.repository.PriceTierRepository
+import com.aimr.aimrpos.domain.repository.PriceHistoryRepository
+import com.aimr.aimrpos.domain.repository.PromotionRepository
+import com.aimr.aimrpos.domain.repository.ScaleItemRepository
+import com.aimr.aimrpos.domain.repository.ProductBatchRepository
+import com.aimr.aimrpos.domain.repository.LoyaltyCustomerRepository
+import com.aimr.aimrpos.domain.repository.LoyaltyTransactionRepository
+import com.aimr.aimrpos.domain.repository.LoyaltyRuleRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -130,6 +153,30 @@ object AppModule {
     fun provideDashboardWidgetDao(database: AimrPosDatabase): DashboardWidgetDao = database.dashboardWidgetDao()
 
     @Provides
+    fun providePriceTierDao(database: AimrPosDatabase): PriceTierDao = database.priceTierDao()
+
+    @Provides
+    fun providePriceHistoryDao(database: AimrPosDatabase): PriceHistoryDao = database.priceHistoryDao()
+
+    @Provides
+    fun providePromotionDao(database: AimrPosDatabase): PromotionDao = database.promotionDao()
+
+    @Provides
+    fun provideScaleItemDao(database: AimrPosDatabase): ScaleItemDao = database.scaleItemDao()
+
+    @Provides
+    fun provideProductBatchDao(database: AimrPosDatabase): ProductBatchDao = database.productBatchDao()
+
+    @Provides
+    fun provideLoyaltyCustomerDao(database: AimrPosDatabase): LoyaltyCustomerDao = database.loyaltyCustomerDao()
+
+    @Provides
+    fun provideLoyaltyTransactionDao(database: AimrPosDatabase): LoyaltyTransactionDao = database.loyaltyTransactionDao()
+
+    @Provides
+    fun provideLoyaltyRuleDao(database: AimrPosDatabase): LoyaltyRuleDao = database.loyaltyRuleDao()
+
+    @Provides
     @Singleton
     fun provideProductRepository(dao: ProductDao): ProductRepository = ProductRepositoryImpl(dao)
 
@@ -204,4 +251,36 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDashboardWidgetRepository(dao: DashboardWidgetDao): DashboardWidgetRepository = DashboardWidgetRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun providePriceTierRepository(dao: PriceTierDao): PriceTierRepository = PriceTierRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun providePriceHistoryRepository(dao: PriceHistoryDao): PriceHistoryRepository = PriceHistoryRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun providePromotionRepository(dao: PromotionDao): PromotionRepository = PromotionRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideScaleItemRepository(dao: ScaleItemDao): ScaleItemRepository = ScaleItemRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideProductBatchRepository(dao: ProductBatchDao): ProductBatchRepository = ProductBatchRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideLoyaltyCustomerRepository(dao: LoyaltyCustomerDao): LoyaltyCustomerRepository = LoyaltyCustomerRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideLoyaltyTransactionRepository(dao: LoyaltyTransactionDao): LoyaltyTransactionRepository = LoyaltyTransactionRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideLoyaltyRuleRepository(dao: LoyaltyRuleDao): LoyaltyRuleRepository = LoyaltyRuleRepositoryImpl(dao)
 }

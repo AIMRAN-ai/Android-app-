@@ -153,6 +153,68 @@ data class DocumentVault(
 )
 
 @Stable
+data class PriceTier(
+    val id: String = "",
+    val productId: String = "",
+    val minQty: Double = 0.0,
+    val price: Double = 0.0,
+    val customerType: String = "RETAIL",
+    val effectiveFrom: Long = 0L,
+    val effectiveTo: Long? = null,
+    val isActive: Boolean = true,
+    val updatedAt: Long = 0L,
+    val isDeleted: Boolean = false,
+    val syncStatus: String = "PENDING"
+)
+
+@Stable
+data class PriceHistory(
+    val id: String = "",
+    val productId: String = "",
+    val oldPrice: Double = 0.0,
+    val newPrice: Double = 0.0,
+    val changedBy: String = "",
+    val changedAt: Long = 0L,
+    val reason: String? = null,
+    val syncStatus: String = "PENDING"
+)
+
+@Stable
+data class Promotion(
+    val id: String = "",
+    val name: String = "",
+    val description: String? = null,
+    val type: String = "PERCENTAGE",
+    val value: Double = 0.0,
+    val minPurchaseAmount: Double = 0.0,
+    val maxDiscountAmount: Double? = null,
+    val applicableProductIds: List<String> = emptyList(),
+    val applicableCategoryIds: List<String> = emptyList(),
+    val customerType: String? = null,
+    val startDate: Long = 0L,
+    val endDate: Long? = null,
+    val isActive: Boolean = true,
+    val usageLimit: Int? = null,
+    val usageCount: Int = 0,
+    val createdBy: String = "",
+    val updatedAt: Long = 0L,
+    val isDeleted: Boolean = false,
+    val syncStatus: String = "PENDING"
+)
+
+@Stable
+data class ScaleItem(
+    val id: String = "",
+    val productId: String = "",
+    val unit: String = "KG",
+    val conversionFactor: Double = 1.0,
+    val isActive: Boolean = true,
+    val updatedAt: Long = 0L,
+    val isDeleted: Boolean = false,
+    val syncStatus: String = "PENDING"
+)
+
+@Stable
 data class ProductBatch(
     val id: String = "",
     val productId: String = "",

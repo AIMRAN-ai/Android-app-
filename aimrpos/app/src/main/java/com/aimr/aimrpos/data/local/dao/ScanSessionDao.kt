@@ -38,6 +38,9 @@ interface ScanSessionDao {
     @Query("DELETE FROM scan_sessions WHERE id = :id")
     suspend fun deleteById(id: String)
 
+    @Query("DELETE FROM scan_sessions WHERE isDeleted = 1")
+    suspend fun deleteSoftDeleted()
+
     @Query("CREATE INDEX IF NOT EXISTS idx_scan_sessions_sync_status ON scan_sessions(syncStatus)")
     suspend fun indexSyncStatus()
 

@@ -14,15 +14,39 @@ import com.aimr.aimrpos.data.local.dao.InvoiceDao
 import com.aimr.aimrpos.data.local.dao.InvoiceItemDao
 import com.aimr.aimrpos.data.local.dao.LocationDao
 import com.aimr.aimrpos.data.local.dao.PaymentDao
+import com.aimr.aimrpos.data.local.dao.PriceHistoryDao
+import com.aimr.aimrpos.data.local.dao.PriceTierDao
+import com.aimr.aimrpos.data.local.dao.ProductBatchDao
 import com.aimr.aimrpos.data.local.dao.ProductDao
+import com.aimr.aimrpos.data.local.dao.PromotionDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderDao
 import com.aimr.aimrpos.data.local.dao.PurchaseOrderItemDao
 import com.aimr.aimrpos.data.local.dao.ReturnInvoiceDao
+import com.aimr.aimrpos.data.local.dao.RoleDao
+import com.aimr.aimrpos.data.local.dao.ScaleItemDao
 import com.aimr.aimrpos.data.local.dao.ScanSessionDao
 import com.aimr.aimrpos.data.local.dao.StockLedgerDao
 import com.aimr.aimrpos.data.local.dao.StockTransferDao
 import com.aimr.aimrpos.data.local.dao.SupplierDao
 import com.aimr.aimrpos.data.local.dao.UserDao
+import com.aimr.aimrpos.data.local.dao.UserRoleDao
+import com.aimr.aimrpos.data.local.dao.CurrencyDao
+import com.aimr.aimrpos.data.local.dao.ExchangeRateDao
+import com.aimr.aimrpos.data.local.dao.WorkflowRuleDao
+import com.aimr.aimrpos.data.local.dao.SalesForecastDao
+import com.aimr.aimrpos.data.local.dao.AnalyticsSnapshotDao
+import com.aimr.aimrpos.data.local.dao.NotificationDao
+import com.aimr.aimrpos.data.local.dao.BusinessUnitDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyCustomerDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyRuleDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyTransactionDao
+import com.aimr.aimrpos.data.local.dao.PermissionDao
+import com.aimr.aimrpos.data.local.dao.StockTransferDao
+import com.aimr.aimrpos.data.local.dao.SupplierDao
+import com.aimr.aimrpos.data.local.dao.UserDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyCustomerDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyRuleDao
+import com.aimr.aimrpos.data.local.dao.LoyaltyTransactionDao
 import com.aimr.aimrpos.data.local.entity.RoleEntity
 import com.aimr.aimrpos.data.local.entity.PermissionEntity
 import com.aimr.aimrpos.data.local.entity.UserRoleEntity
@@ -35,6 +59,14 @@ import com.aimr.aimrpos.data.local.entity.ExchangeRateEntity
 import com.aimr.aimrpos.data.local.entity.BusinessUnitEntity
 import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
 import com.aimr.aimrpos.data.local.entity.DashboardWidgetEntity
+import com.aimr.aimrpos.data.local.entity.PriceTierEntity
+import com.aimr.aimrpos.data.local.entity.PriceHistoryEntity
+import com.aimr.aimrpos.data.local.entity.PromotionEntity
+import com.aimr.aimrpos.data.local.entity.ScaleItemEntity
+import com.aimr.aimrpos.data.local.entity.ProductBatchEntity
+import com.aimr.aimrpos.data.local.entity.LoyaltyCustomerEntity
+import com.aimr.aimrpos.data.local.entity.LoyaltyTransactionEntity
+import com.aimr.aimrpos.data.local.entity.LoyaltyRuleEntity
 import com.aimr.aimrpos.data.local.entity.BusinessEntity
 import com.aimr.aimrpos.data.local.entity.CategoryEntity
 import com.aimr.aimrpos.data.local.entity.CustomerEntity
@@ -85,9 +117,17 @@ import com.aimr.aimrpos.data.local.entity.UserEntity
         NotificationEntity::class,
         ExchangeRateEntity::class,
         BusinessUnitEntity::class,
-        DashboardWidgetEntity::class
+        DashboardWidgetEntity::class,
+        PriceTierEntity::class,
+        PriceHistoryEntity::class,
+        PromotionEntity::class,
+        ScaleItemEntity::class,
+        ProductBatchEntity::class,
+        LoyaltyCustomerEntity::class,
+        LoyaltyTransactionEntity::class,
+        LoyaltyRuleEntity::class
     ],
-    version = 6,
+    version = 11,
     exportSchema = false
 )
 abstract class AimrPosDatabase : RoomDatabase() {
@@ -124,4 +164,20 @@ abstract class AimrPosDatabase : RoomDatabase() {
     abstract fun businessUnitDao(): BusinessUnitDao
 
     abstract fun dashboardWidgetDao(): DashboardWidgetDao
+
+    abstract fun priceTierDao(): PriceTierDao
+
+    abstract fun priceHistoryDao(): PriceHistoryDao
+
+    abstract fun promotionDao(): PromotionDao
+
+    abstract fun scaleItemDao(): ScaleItemDao
+
+    abstract fun productBatchDao(): ProductBatchDao
+
+    abstract fun loyaltyCustomerDao(): LoyaltyCustomerDao
+
+    abstract fun loyaltyTransactionDao(): LoyaltyTransactionDao
+
+    abstract fun loyaltyRuleDao(): LoyaltyRuleDao
 }

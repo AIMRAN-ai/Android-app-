@@ -29,6 +29,12 @@ import com.aimr.aimrpos.presentation.aging.AgingReportScreen
 import com.aimr.aimrpos.presentation.qr.QrScannerScreen
 import com.aimr.aimrpos.presentation.scanhub.ScanHubScreen
 import com.aimr.aimrpos.presentation.supplierledger.SupplierLedgerScreen
+import com.aimr.aimrpos.presentation.pricing.PriceTierScreen
+import com.aimr.aimrpos.presentation.pricing.PriceHistoryScreen
+import com.aimr.aimrpos.presentation.pricing.PromotionScreen
+import com.aimr.aimrpos.presentation.scale.ScaleItemScreen
+import com.aimr.aimrpos.presentation.batch.ProductBatchScreen
+import com.aimr.aimrpos.presentation.loyalty.LoyaltyScreen
 import com.aimr.aimrpos.ui.bottombar.CinematicBottomBar
 import com.aimr.aimrpos.ui.bottombar.BottomNavItem
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -123,6 +129,11 @@ fun MainNavGraphWithBottomBar() {
         composable(Screen.NewInvoice.route) { NewInvoiceScreen(navController) }
         composable(Screen.CustomerLedger.route) { CustomerLedgerScreen(navController) }
         composable(Screen.Settings.route) { SettingsScreen(navController) }
+        composable(Screen.ScanHub.route) { ScanHubScreen(navController) }
+        composable(Screen.SupplierLedger.route) { SupplierLedgerScreen(navController) }
+        composable(Screen.Promotions.route) { PromotionScreen(navController) }
+        composable(Screen.ScaleItems.route) { ScaleItemScreen(navController) }
+        composable(Screen.Loyalty.route) { LoyaltyScreen(navController) }
 
         // Bottom bar on all main screens
         composable(Screen.Dashboard.route) {
@@ -154,6 +165,27 @@ fun MainNavGraphWithBottomBar() {
                 SettingsScreen(navController)
                 CinematicBottomBar(navController, BottomNavItems)
             }
+        }
+        composable(
+            route = Screen.PriceTiers.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            PriceTierScreen(navController, productId)
+        }
+        composable(
+            route = Screen.PriceHistory.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")
+            PriceHistoryScreen(navController, productId)
+        }
+        composable(
+            route = Screen.ProductBatches.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")
+            ProductBatchScreen(navController, productId)
         }
     }
 }

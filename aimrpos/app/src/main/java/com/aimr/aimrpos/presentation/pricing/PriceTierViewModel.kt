@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 data class PriceTierState(
     val tiers: List<PriceTier> = emptyList(),
@@ -15,7 +17,8 @@ data class PriceTierState(
     val error: String? = null
 )
 
-class PriceTierViewModel(
+@HiltViewModel
+class PriceTierViewModel @Inject constructor(
     private val priceTierRepository: PriceTierRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(PriceTierState())

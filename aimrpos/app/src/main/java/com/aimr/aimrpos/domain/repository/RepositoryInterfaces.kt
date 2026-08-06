@@ -3,14 +3,23 @@ package com.aimr.aimrpos.domain.repository
 import com.aimr.aimrpos.domain.model.Business
 import com.aimr.aimrpos.domain.model.Category
 import com.aimr.aimrpos.domain.model.Customer
+import com.aimr.aimrpos.domain.model.DashboardWidget
 import com.aimr.aimrpos.domain.model.DocumentVault
 import com.aimr.aimrpos.domain.model.Invoice
 import com.aimr.aimrpos.domain.model.InvoiceItem
 import com.aimr.aimrpos.domain.model.Location
+import com.aimr.aimrpos.domain.model.LoyaltyCustomer
+import com.aimr.aimrpos.domain.model.LoyaltyRule
+import com.aimr.aimrpos.domain.model.LoyaltyTransaction
 import com.aimr.aimrpos.domain.model.Payment
+import com.aimr.aimrpos.domain.model.PriceHistory
+import com.aimr.aimrpos.domain.model.PriceTier
 import com.aimr.aimrpos.domain.model.Product
+import com.aimr.aimrpos.domain.model.ProductBatch
+import com.aimr.aimrpos.domain.model.Promotion
 import com.aimr.aimrpos.domain.model.PurchaseOrder
 import com.aimr.aimrpos.domain.model.ReturnInvoice
+import com.aimr.aimrpos.domain.model.ScaleItem
 import com.aimr.aimrpos.domain.model.StockLedgerEntry
 import com.aimr.aimrpos.domain.model.StockTransfer
 import com.aimr.aimrpos.domain.model.Supplier
@@ -273,6 +282,62 @@ interface DashboardWidgetRepository {
     suspend fun updateConfig(id: String, config: String)
     suspend fun deleteById(id: String)
     suspend fun deleteSoftDeleted()
+}
+
+interface PriceTierRepository {
+    suspend fun upsert(tier: PriceTier)
+    suspend fun getById(id: String): PriceTier?
+    fun getByProduct(productId: String): Flow<List<PriceTier>>
+    suspend fun getByProductAndQty(productId: String, qty: Double, customerType: String): PriceTier?
+    fun getAllActive(): Flow<List<PriceTier>>
+    suspend fun deleteById(id: String)
+    suspend fun deleteForProduct(productId: String)
+    suspend fun deleteSoftDeleted()
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface PriceHistoryRepository {
+    suspend fun insert(history: PriceHistory)
+    fun getByProduct(productId: String): Flow<List<PriceHistory>>
+    fun getByUser(userId: String): Flow<List<PriceHistory>>
+    fun getBetween(from: Long, to: Long): Flow<List<PriceHistory>>
+    suspend fun getById(id: String): PriceHistory?
+    fun getRecent(limit: Int): Flow<List<PriceHistory>>
+    suspend fun deleteForProduct(productId: String)
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface PromotionRepository {
+    suspend fun upsert(promotion: Promotion)
+    suspend fun getById(id: String): Promotion?
+    fun getAllActive(): Flow<List<Promotion>>
+    fun getCurrentlyActive(now: Long): Flow<List<Promotion>>
+    fun getByUser(userId: String): Flow<List<Promotion>>
+    suspend fun deleteById(id: String)
+    suspend fun incrementUsage(id: String)
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface ScaleItemRepository {
+    suspend fun upsert(scaleItem: ScaleItem)
+    suspend fun getById(id: String): ScaleItem?
+    suspend fun getByProduct(productId: String): ScaleItem?
+    fun getAllActive(): Flow<List<ScaleItem>>
+    suspend fun deleteById(id: String)
+    suspend fun deleteForProduct(productId: String)
+    suspend fun updateSyncStatus(id: String, status: String)
+}
+
+interface ProductBatchRepository {
+    suspend fun upsert(batch: ProductBatch)
+    suspend fun getById(id: String): ProductBatch?
+    fun getByProduct(productId: String): Flow<List<ProductBatch>>
+    fun getExpiringBefore(productId: String, before: Long): Flow<List<ProductBatch>>
+    fun getAllExpiringBefore(before: Long): Flow<List<ProductBatch>>
+    fun getAll(): Flow<List<ProductBatch>>
+    suspend fun deleteById(id: String)
+    suspend fun deleteForProduct(productId: String)
+    suspend fun updateSyncStatus(id: String, status: String)
 }
 
 interface LoyaltyCustomerRepository {
