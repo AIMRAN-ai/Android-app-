@@ -49,6 +49,7 @@ import com.aimr.aimrpos.data.repository.LoyaltyTransactionRepositoryImpl
 import com.aimr.aimrpos.data.repository.LoyaltyRuleRepositoryImpl
 import com.aimr.aimrpos.data.repository.ScanSessionRepositoryImpl
 import com.aimr.aimrpos.domain.repository.CategoryRepository
+import com.aimr.aimrpos.domain.usecase.ResolveEffectivePriceUseCase
 import com.aimr.aimrpos.domain.repository.DashboardWidgetRepository
 import com.aimr.aimrpos.domain.repository.ScanSessionRepository
 import com.aimr.aimrpos.domain.repository.PriceTierRepository
@@ -285,4 +286,16 @@ object AppModule {
     @Provides
     @Singleton
     fun provideLoyaltyRuleRepository(dao: LoyaltyRuleDao): LoyaltyRuleRepository = LoyaltyRuleRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideResolveEffectivePriceUseCase(
+        priceTierRepository: PriceTierRepository,
+        scaleItemRepository: ScaleItemRepository,
+        promotionRepository: PromotionRepository
+    ): ResolveEffectivePriceUseCase = ResolveEffectivePriceUseCase(
+        priceTierRepository = priceTierRepository,
+        scaleItemRepository = scaleItemRepository,
+        promotionRepository = promotionRepository
+    )
 }
