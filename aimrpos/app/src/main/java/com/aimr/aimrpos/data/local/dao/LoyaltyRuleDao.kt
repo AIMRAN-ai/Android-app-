@@ -28,4 +28,7 @@ interface LoyaltyRuleDao {
 
     @Query("UPDATE loyalty_rules SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
+
+    @Query("SELECT * FROM loyalty_rules WHERE syncStatus = 'PENDING'")
+    fun getUnsynced(): Flow<List<LoyaltyRuleEntity>>
 }

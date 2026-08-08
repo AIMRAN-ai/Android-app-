@@ -35,6 +35,9 @@ interface ScaleItemDao {
     @Query("UPDATE scale_items SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
 
+    @Query("SELECT * FROM scale_items WHERE syncStatus = 'PENDING'")
+    fun getUnsynced(): Flow<List<ScaleItemEntity>>
+
     @Query("CREATE INDEX IF NOT EXISTS idx_scale_items_product ON scale_items(productId)")
     suspend fun indexProductId()
 }

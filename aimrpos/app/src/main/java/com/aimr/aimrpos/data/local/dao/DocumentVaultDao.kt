@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.aimr.aimrpos.data.local.entity.DocumentVaultEntity
-import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

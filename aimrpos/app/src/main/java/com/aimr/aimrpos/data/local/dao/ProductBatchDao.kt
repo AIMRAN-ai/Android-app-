@@ -41,6 +41,9 @@ interface ProductBatchDao {
     @Query("UPDATE product_batches SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
 
+    @Query("SELECT * FROM product_batches WHERE syncStatus = 'PENDING'")
+    fun getUnsynced(): Flow<List<ProductBatchEntity>>
+
     @Query("CREATE INDEX IF NOT EXISTS idx_product_batches_product ON product_batches(productId)")
     suspend fun indexProductId()
 

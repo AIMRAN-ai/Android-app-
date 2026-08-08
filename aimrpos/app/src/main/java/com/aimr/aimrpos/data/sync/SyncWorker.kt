@@ -35,6 +35,14 @@ class SyncWorker(
             val unsyncedDocuments = database.documentVaultDao().getUnsynced().first()
             val unsyncedAuditLogs = database.auditLogDao().getUnsynced().first()
             val unsyncedNotifications = database.notificationDao().getUnsynced().first()
+            val unsyncedPriceTiers = database.priceTierDao().getUnsynced().first()
+            val unsyncedPriceHistory = database.priceHistoryDao().getUnsynced().first()
+            val unsyncedPromotions = database.promotionDao().getUnsynced().first()
+            val unsyncedScaleItems = database.scaleItemDao().getUnsynced().first()
+            val unsyncedProductBatches = database.productBatchDao().getUnsynced().first()
+            val unsyncedLoyaltyCustomers = database.loyaltyCustomerDao().getUnsynced().first()
+            val unsyncedLoyaltyTransactions = database.loyaltyTransactionDao().getUnsynced().first()
+            val unsyncedLoyaltyRules = database.loyaltyRuleDao().getUnsynced().first()
 
             Log.d(TAG, "Syncing: ${unsyncedProducts.size} products, ${unsyncedInvoices.size} invoices, ${unsyncedCustomers.size} customers, ${unsyncedDocuments.size} documents")
 
@@ -46,6 +54,14 @@ class SyncWorker(
             pushToSupabase(unsyncedDocuments, "scanned_documents")
             pushToSupabase(unsyncedAuditLogs, "audit_log")
             pushToSupabase(unsyncedNotifications, "notifications")
+            pushToSupabase(unsyncedPriceTiers, "price_tiers")
+            pushToSupabase(unsyncedPriceHistory, "price_history")
+            pushToSupabase(unsyncedPromotions, "promotions")
+            pushToSupabase(unsyncedScaleItems, "scale_items")
+            pushToSupabase(unsyncedProductBatches, "product_batches")
+            pushToSupabase(unsyncedLoyaltyCustomers, "loyalty_customers")
+            pushToSupabase(unsyncedLoyaltyTransactions, "loyalty_transactions")
+            pushToSupabase(unsyncedLoyaltyRules, "loyalty_rules")
 
             markAsSynced(unsyncedProducts.map { it.id }, "products")
             markAsSynced(unsyncedInvoices.map { it.id }, "invoices")
@@ -55,6 +71,14 @@ class SyncWorker(
             markAsSynced(unsyncedDocuments.map { it.id }, "scanned_documents")
             markAsSynced(unsyncedAuditLogs.map { it.id }, "audit_log")
             markAsSynced(unsyncedNotifications.map { it.id }, "notifications")
+            markAsSynced(unsyncedPriceTiers.map { it.id }, "price_tiers")
+            markAsSynced(unsyncedPriceHistory.map { it.id }, "price_history")
+            markAsSynced(unsyncedPromotions.map { it.id }, "promotions")
+            markAsSynced(unsyncedScaleItems.map { it.id }, "scale_items")
+            markAsSynced(unsyncedProductBatches.map { it.id }, "product_batches")
+            markAsSynced(unsyncedLoyaltyCustomers.map { it.id }, "loyalty_customers")
+            markAsSynced(unsyncedLoyaltyTransactions.map { it.id }, "loyalty_transactions")
+            markAsSynced(unsyncedLoyaltyRules.map { it.id }, "loyalty_rules")
 
             Log.d(TAG, "Sync completed successfully")
             Result.success()
@@ -81,6 +105,14 @@ class SyncWorker(
             "scanned_documents" -> ids.forEach { database.documentVaultDao().updateSyncStatus(it, "SYNCED") }
             "audit_log" -> ids.forEach { database.auditLogDao().updateSyncStatus(it, "SYNCED") }
             "notifications" -> ids.forEach { database.notificationDao().updateSyncStatus(it, "SYNCED") }
+            "price_tiers" -> ids.forEach { database.priceTierDao().updateSyncStatus(it, "SYNCED") }
+            "price_history" -> ids.forEach { database.priceHistoryDao().updateSyncStatus(it, "SYNCED") }
+            "promotions" -> ids.forEach { database.promotionDao().updateSyncStatus(it, "SYNCED") }
+            "scale_items" -> ids.forEach { database.scaleItemDao().updateSyncStatus(it, "SYNCED") }
+            "product_batches" -> ids.forEach { database.productBatchDao().updateSyncStatus(it, "SYNCED") }
+            "loyalty_customers" -> ids.forEach { database.loyaltyCustomerDao().updateSyncStatus(it, "SYNCED") }
+            "loyalty_transactions" -> ids.forEach { database.loyaltyTransactionDao().updateSyncStatus(it, "SYNCED") }
+            "loyalty_rules" -> ids.forEach { database.loyaltyRuleDao().updateSyncStatus(it, "SYNCED") }
         }
     }
 

@@ -3,9 +3,16 @@ package com.aimr.aimrpos.domain.usecase
 import com.aimr.aimrpos.domain.model.Invoice
 import com.aimr.aimrpos.domain.model.InvoiceItem
 import com.aimr.aimrpos.domain.model.Product
+import com.aimr.aimrpos.domain.model.PriceTier
+import com.aimr.aimrpos.domain.model.Promotion
+import com.aimr.aimrpos.domain.model.ScaleItem
+import com.aimr.aimrpos.domain.repository.PriceTierRepository
+import com.aimr.aimrpos.domain.repository.PromotionRepository
+import com.aimr.aimrpos.domain.repository.ScaleItemRepository
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.flow.first
 
 class GenerateInvoiceNumberUseCase {
     operator fun invoke(): String {
@@ -244,3 +251,89 @@ class CreateNotificationUseCase {
         )
     }
 }
+
+class ResolveEffectivePriceUseCase(
+    private val priceTierRepository: PriceTierRepository,
+    private val scaleItemRepository: ScaleItemRepository,
+    private val promotionRepository: PromotionRepository
+) {
+    suspend operator fun invoke(
+        productId: String,
+        basePrice: Double,
+        quantity: Double,
+        customerType: String = "RETAIL"
+    ): PriceResolutionResult {
+        var effectivePrice = basePrice
+        var appliedTier: PriceTier? = null
+        var isWeighted = false
+        var scaleConversionFactor = 1.0
+
+        val scaleItem = scaleItemRepository.getByProduct(productId)
+        if (scaleItem != null && scaleItem.isActive) {
+            isWeighted = true
+            scaleConversionFactor = scaleItem.conversionFactor
+        }
+
+        val tier = priceTierRepository.getByProductAndQty(productId, quantity, customerType)
+        if (tier != null && tier.isActive) {
+            effectivePrice = tier.price
+            appliedTier = tier
+        }
+
+        val promotions = promotionRepository.getCurrentlyActive(System.currentTimeMillis()).first()
+        var totalDiscount = 0.0
+        var appliedPromotions: List<Promotion> = emptyList()
+
+        promotions.forEach { promotion ->
+            var applicable = false
+            if (promotion.applicableProductIds.contains(productId) || promotion.applicableProductIds.isEmpty()) {
+                applicable = true
+            }
+            if (promotion.customerType != null && promotion.customerType != customerType) {
+                applicable = false
+            }
+            if (promotion.minPurchaseAmount > 0.0 && (effectivePrice * quantity) < promotion.minPurchaseAmount) {
+                applicable = false
+            }
+            if (applicable) {
+                appliedPromotions = appliedPromotions + promotion
+                when (promotion.type) {
+                    "PERCENTAGE" -> {
+                        val discount = effectivePrice * quantity * promotion.value / 100.0
+                        totalDiscount += minOf(discount, promotion.maxDiscountAmount ?: Double.MAX_VALUE)
+                    }
+                    "FIXED" -> {
+                        totalDiscount += (promotion.value * quantity).coerceAtMost(promotion.maxDiscountAmount ?: Double.MAX_VALUE)
+                    }
+                    "BUY_X_GET_Y" -> {
+                        val buyQty = promotion.value
+                        val freeQty = (quantity / (buyQty + 1)).toInt()
+                        totalDiscount += freeQty * effectivePrice
+                    }
+                }
+            }
+        }
+
+        if (totalDiscount > 0.0) {
+            effectivePrice -= (totalDiscount / quantity).coerceAtLeast(0.0)
+        }
+
+        return PriceResolutionResult(
+            effectivePrice = effectivePrice,
+            appliedTier = appliedTier,
+            appliedPromotions = appliedPromotions,
+            totalDiscount = totalDiscount,
+            isWeighted = isWeighted,
+            scaleConversionFactor = scaleConversionFactor
+        )
+    }
+}
+
+data class PriceResolutionResult(
+    val effectivePrice: Double,
+    val appliedTier: PriceTier?,
+    val appliedPromotions: List<Promotion>,
+    val totalDiscount: Double,
+    val isWeighted: Boolean,
+    val scaleConversionFactor: Double
+)

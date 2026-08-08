@@ -116,6 +116,30 @@ fun NavGraph() {
         composable(Screen.QrScanner.route) { QrScannerScreen(navController) }
         composable(Screen.ScanHub.route) { ScanHubScreen(navController) }
         composable(Screen.SupplierLedger.route) { SupplierLedgerScreen(navController) }
+        composable(Screen.Promotions.route) { PromotionScreen(navController) }
+        composable(Screen.ScaleItems.route) { ScaleItemScreen(navController) }
+        composable(Screen.Loyalty.route) { LoyaltyScreen(navController) }
+        composable(
+            route = Screen.PriceTiers.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            PriceTierScreen(navController, productId)
+        }
+        composable(
+            route = Screen.PriceHistory.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")
+            PriceHistoryScreen(navController, productId)
+        }
+        composable(
+            route = Screen.ProductBatches.route,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")
+            ProductBatchScreen(navController, productId)
+        }
     }
 }
 
@@ -124,18 +148,7 @@ fun MainNavGraphWithBottomBar() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Screen.Dashboard.route) {
-        composable(Screen.Dashboard.route) { DashboardScreen(navController) }
-        composable(Screen.InventoryList.route) { InventoryListScreen(navController) }
-        composable(Screen.NewInvoice.route) { NewInvoiceScreen(navController) }
-        composable(Screen.CustomerLedger.route) { CustomerLedgerScreen(navController) }
-        composable(Screen.Settings.route) { SettingsScreen(navController) }
-        composable(Screen.ScanHub.route) { ScanHubScreen(navController) }
-        composable(Screen.SupplierLedger.route) { SupplierLedgerScreen(navController) }
-        composable(Screen.Promotions.route) { PromotionScreen(navController) }
-        composable(Screen.ScaleItems.route) { ScaleItemScreen(navController) }
-        composable(Screen.Loyalty.route) { LoyaltyScreen(navController) }
-
-        // Bottom bar on all main screens
+        // Main screens with bottom bar
         composable(Screen.Dashboard.route) {
             Column {
                 DashboardScreen(navController)
@@ -166,6 +179,12 @@ fun MainNavGraphWithBottomBar() {
                 CinematicBottomBar(navController, BottomNavItems)
             }
         }
+        // Non-main screens without bottom bar
+        composable(Screen.ScanHub.route) { ScanHubScreen(navController) }
+        composable(Screen.SupplierLedger.route) { SupplierLedgerScreen(navController) }
+        composable(Screen.Promotions.route) { PromotionScreen(navController) }
+        composable(Screen.ScaleItems.route) { ScaleItemScreen(navController) }
+        composable(Screen.Loyalty.route) { LoyaltyScreen(navController) }
         composable(
             route = Screen.PriceTiers.route,
             arguments = listOf(navArgument("productId") { type = NavType.StringType })

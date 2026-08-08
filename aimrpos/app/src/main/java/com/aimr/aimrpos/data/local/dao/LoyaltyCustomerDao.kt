@@ -38,6 +38,9 @@ interface LoyaltyCustomerDao {
     @Query("UPDATE loyalty_customers SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
 
+    @Query("SELECT * FROM loyalty_customers WHERE syncStatus = 'PENDING'")
+    fun getUnsynced(): Flow<List<LoyaltyCustomerEntity>>
+
     @Query("CREATE INDEX IF NOT EXISTS idx_loyalty_customers_customer ON loyalty_customers(customerId)")
     suspend fun indexCustomerId()
 }

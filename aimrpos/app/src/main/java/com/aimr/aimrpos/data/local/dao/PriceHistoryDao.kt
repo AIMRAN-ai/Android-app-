@@ -38,6 +38,9 @@ interface PriceHistoryDao {
     @Query("UPDATE price_history SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
 
+    @Query("SELECT * FROM price_history WHERE syncStatus = 'PENDING'")
+    fun getUnsynced(): Flow<List<PriceHistoryEntity>>
+
     @Query("CREATE INDEX IF NOT EXISTS idx_price_history_product ON price_history(productId)")
     suspend fun indexProductId()
 

@@ -1,7 +1,9 @@
 package com.aimr.aimrpos.data.local
 
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
+import android.content.Context
 import com.aimr.aimrpos.data.local.dao.ApprovalRequestDao
 import com.aimr.aimrpos.data.local.dao.AuditLogDao
 import com.aimr.aimrpos.data.local.dao.BusinessDao
@@ -180,4 +182,23 @@ abstract class AimrPosDatabase : RoomDatabase() {
     abstract fun loyaltyTransactionDao(): LoyaltyTransactionDao
 
     abstract fun loyaltyRuleDao(): LoyaltyRuleDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AimrPosDatabase? = null
+
+        fun getInstance(context: Context): AimrPosDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AimrPosDatabase::class.java,
+                    "aimr_pos.db"
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }

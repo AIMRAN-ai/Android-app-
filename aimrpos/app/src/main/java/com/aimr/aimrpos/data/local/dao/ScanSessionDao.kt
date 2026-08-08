@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.aimr.aimrpos.data.local.entity.ScanSessionEntity
 import kotlinx.coroutines.flow.Flow
 

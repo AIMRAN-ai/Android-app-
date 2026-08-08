@@ -30,4 +30,7 @@ interface NotificationDao {
 
     @Query("DELETE FROM notifications WHERE userId = :userId AND createdAt < :olderThan")
     suspend fun deleteOlderThan(userId: String, olderThan: Long)
+
+    @Query("SELECT * FROM notifications WHERE syncStatus = 'PENDING'")
+    fun getUnsynced(): Flow<List<NotificationEntity>>
 }

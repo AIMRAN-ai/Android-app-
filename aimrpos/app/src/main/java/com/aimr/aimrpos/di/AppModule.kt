@@ -77,7 +77,9 @@ object AppModule {
             context,
             AimrPosDatabase::class.java,
             "aimr_pos.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

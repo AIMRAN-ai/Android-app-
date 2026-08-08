@@ -41,4 +41,7 @@ interface AuditLogDao {
 
     @Query("CREATE INDEX IF NOT EXISTS idx_audit_log_entity ON audit_log(entityType, entityId)")
     suspend fun indexEntity()
+
+    @Query("SELECT * FROM audit_log WHERE syncStatus = 'PENDING'")
+    fun getUnsynced(): Flow<List<AuditLogEntity>>
 }

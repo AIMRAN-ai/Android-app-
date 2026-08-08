@@ -41,6 +41,9 @@ interface PromotionDao {
     @Query("UPDATE promotions SET syncStatus = :status WHERE id = :id")
     suspend fun updateSyncStatus(id: String, status: String)
 
+    @Query("SELECT * FROM promotions WHERE syncStatus = 'PENDING'")
+    fun getUnsynced(): Flow<List<PromotionEntity>>
+
     @Query("CREATE INDEX IF NOT EXISTS idx_promotions_active ON promotions(isActive, isDeleted)")
     suspend fun indexActive()
 }
